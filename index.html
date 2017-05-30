@@ -1,0 +1,54 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <title>TableQuiz</title>
+    
+    <!-- RESET -->
+    <link rel="stylesheet" href="css/reset.css">
+    
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+    
+    <!-- My CSS -->
+    <link rel="stylesheet" href="css/main.css">
+    
+    <!-- My scripts -->
+    <script src="js/file-picker.js"></script>
+    <script src="js/dnd.js"></script>
+</head>
+    
+<body>
+    <div id="top-bar">        
+        <label class="btn btn-default btn-file" id="file-picker-label">
+            Select a File
+            <input type="file" id="file-picker" accept=".csv, .txt" onchange="filePicked(this.files)">
+        </label>       
+        
+        <div id="file-upload-indicator">
+            &nbsp;
+        </div>
+        
+        <button class="btn btn-default btn-file" id="validate-button" onclick="validate()">
+            Validate
+        </button>
+    </div>
+    <div id="main-content">
+        <div id="table-div">
+            
+        </div>
+    </div>
+</body>
+</html>
