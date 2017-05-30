@@ -1,5 +1,6 @@
 html {
-    height: 100%;
+    position:relative;
+    min-height: 100%;
     width: 99%;
 }
 
@@ -9,6 +10,7 @@ body {
     height: 100%;
     width: 100%;
     font-family: sans-serif;
+    background: #fafafa;
 }
 
 #top-bar {
@@ -21,6 +23,7 @@ body {
     background: #2b2b2b;
     color: #fafafa;
     font-size: 120%;    
+    border-bottom: 3px solid black;
     
     display:inline-flex;
     flex-flow:row;
@@ -39,19 +42,24 @@ body {
     font-weight: bold;
 }
 
-#file-picker-label {
+#validate-button, #file-picker-label {
+    background-color:lawngreen;
     min-width: 10%;
-    line-height: 30px;
+    border: 2px solid #1b1b1b;
 }
 
-#file-upload-indicator {
+#file-picker-label {
+    background-color: cornflowerblue;    
+    line-height: 27px;
+}
+
+#top-bar-middle {
+    
+    top:10%;
+    
     width:50%;
     text-align: center;
     margin: 0 auto;
-}
-
-#validate-button {
-    min-width: 10%;
 }
 
 input[type="file"] {
@@ -63,6 +71,10 @@ input[type="file"] {
     margin-top: 100px;
 }
 
+button:focus {
+    outline:0 !important;
+}
+
 table {
     border-collapse: collapse;
     width:100%;
@@ -71,15 +83,19 @@ table {
 
 table, th, tr, td {
     border: 2px solid black;
-    padding:20px;
+    padding:8px;
 }
 
 th.question-column {    
-    width:25%;
+    
 }
 
 td {
     vertical-align: middle;
+}
+
+td:first-child {
+    padding:10px;
 }
 
 th {
@@ -87,6 +103,7 @@ th {
     color: white;
     text-align:center;
     font-weight: bold;
+    padding:15px;
 }
 
 tr:nth-child(odd) {
@@ -94,7 +111,30 @@ tr:nth-child(odd) {
 }
 
 .answer-textarea {
+    margin:0;
+    padding:0;
     width:100%;
     resize: none;
+}
+
+.correct-answer {
+    color:#4CAF50;
+}
+
+.wrong-answer {
+    color:#BB2222;
+}
+
+footer {
+    font-weight:bold;
+    bottom:0;
+    position:absolute:
+    left:0;
+    text-align: center;
+        
+    overflow:hidden;
+    
+    padding-top: 20px;
+    padding-bottom:20px;
 }
 
