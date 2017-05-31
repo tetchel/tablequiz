@@ -4,15 +4,7 @@
 // is the nth answer column corresponding to that question
 var answersArray = [];
 
-
-window.onbeforeunload = function() {
-    if(isEmptyObject(answersMap)) {
-        return "Are you sure you want to leave? Your current quiz will be lost!";
-    }
-    return;
-}
-
-function filePicked(files) {
+function filePicked(files) {    
     var file = files[0], 
         reader = new FileReader();
     
@@ -21,15 +13,20 @@ function filePicked(files) {
         return;
     }
     
-    console.log("Uploaded " + file.name + ", size: " + (file.size / 1024) + "kb");
+    //console.log("Uploaded " + file.name + ", size: " + (file.size / 1024) + "kb");
     reader.readAsText(file, "UTF-8");
     
     reader.onload = function (e) {
         $("#file-display").html(file.name).show();
-        buildTable(e.target.result);
+        $("#score-display").empty();
+        
+        // Sanitize the csv input by converting all whitespace to a single space, and trimming
+        var csvText = e.target.result.trim();
+        csvText = csvText.replace(/\s\s+/g, ' ');
+        buildTable(csvText);
     };
     reader.onerror = function (e) {
-        $("#file-display").html(e.target.result).show()
+        $("#file-display").html(e.target.result).show();
     };
 }
 
@@ -109,61 +106,4 @@ function shuffleArray(array) {
         array[j] = temp;
     }
     return array;
-}
-
-function validate() {
-    $("body").css("cursor", "progress");
-    
-    // Delete previous validation results
-    $(".correct-answer").remove();
-    $(".wrong-answer").remove();
-    
-    var answerTextBoxes = $(".answer-textarea");
-    // track # of questions right/wrong
-    var correct = 0, total = 0;
-        
-    answerTextBoxes.each(function() {
-        var id = $(this).attr('id');
-        // Recall the element's ID is its answer index i_j
-        var iIndex = id.substr(0, id.indexOf("_"));
-        var jIndex = id.substr(id.indexOf("_") + 1);
-        
-        var text = $(this).val();        
-        var answer = answersArray[iIndex][jIndex];
-        
-        // Write either Correct or Wrong under each answer box
-        var toAppend = "";
-        if(answer.trim().toLowerCase().localeCompare(text.toLowerCase().trim()) === 0) {
-            toAppend = "<span class=\"correct-answer\">&#10004; Correct" + "</span>";
-            correct++;
-        }
-        else {
-            toAppend = "<span class=\"wrong-answer\">&#10006; Expected: " + answer + "</span>";
-        }
-        
-        total++;        
-        var parent = $(this).parent();
-        parent.append(toAppend);
-    });
-    
-    if(answerTextBoxes.length == 0) {
-        alert("There are no answers to validate.");
-    }
-    else {
-        var percent = (correct / total) * 100;
-        percent = parseFloat(percent).toFixed(2);
-        
-        var spanClass = "";
-        if(percent > 80) {
-            spanClass = "correct-answer"
-        }
-        else if(percent < 60) {
-            spanClass = "wrong-answer";
-        }
-        
-        $('#score-display').html(correct + " / " + total + " &nbsp; | &nbsp; " +
-            "<span class=\"" + spanClass + "\">"+ percent + " %</span>").show();
-    }
-        
-    $("body").css("cursor", "default");
 }

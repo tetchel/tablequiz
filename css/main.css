@@ -28,10 +28,7 @@ body {
     display:inline-flex;
     flex-flow:row;
     
-    padding-left:   15px;
-    padding-right:  15px;
-    padding-top:    15px;
-    padding-bottom: 15px;
+    padding: 15px;
 }
 
 #top-bar * {
@@ -43,9 +40,9 @@ body {
 }
 
 #validate-button, #file-picker-label {
-    background-color:lawngreen;
+    background-color: limegreen;
     min-width: 10%;
-    border: 2px solid #1b1b1b;
+    border: 2px solid #1b1b1b;    
 }
 
 #file-picker-label {
@@ -72,7 +69,7 @@ input[type="file"] {
 }
 
 button:focus {
-    outline:0 !important;
+    outline:0 !important;   /* Disable the blue outline - ugly against dark background */
 }
 
 table {
@@ -86,7 +83,7 @@ table, th, tr, td {
     padding:8px;
 }
 
-th.question-column {    
+th.question-column {
     
 }
 
