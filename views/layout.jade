@@ -1,0 +1,46 @@
+doctype html
+html
+
+head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title= title
+    link(rel='shortcut icon', type='image/x-icon', href='favicon.ico')
+    // RESET
+    link(rel='stylesheet', href='stylesheets/reset.css')
+    // Bootstrap
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', 
+            integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', 
+            crossorigin='anonymous')
+    // My CSS
+    link(rel='stylesheet', href='stylesheets/main.css')
+
+body
+    #top-bar
+        label#file-picker-label.btn.btn-default.btn-file
+            | Select a File
+            input#file-picker(type='file', accept='.csv, .txt', onchange='filePicked(this.files)')
+
+        #top-bar-middle
+            #file-display
+            #score-display
+
+        button#validate-button.btn.btn-default.btn-file(onclick='validate()')
+            | Validate
+
+    #main-content
+        #table-div
+    footer
+        a(target='_blank', href='https://github.com/tetchel/tablequiz/issues') Submit Feedback
+
+    // Scripts
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+    script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', 
+            integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', 
+            crossorigin='anonymous')
+
+    script(src='javascripts/file-picker.js')
+    script(src='javascripts/dnd.js')
+    script(src='javascripts/index.js')
+    script(src='javascripts/validator.js')
