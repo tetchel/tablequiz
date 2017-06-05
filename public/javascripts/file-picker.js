@@ -13,6 +13,13 @@ function filePicked(files) {
         return;
     }
     
+    if(!jQuery.isEmptyObject(answersArray)) {
+        var conf = confirm('Your current quiz will be lost. Are you sure you wish to continue?');
+        if(!conf) {
+            return;
+        }
+    }
+    
     //console.log("Uploaded " + file.name + ", size: " + (file.size / 1024) + "kb");
     reader.readAsText(file, "UTF-8");
     
@@ -20,7 +27,7 @@ function filePicked(files) {
         $("#file-display").html(file.name).show();
         $("#score-display").empty();
         
-        // Sanitize the csv input by converting all whitespace to a single space, and trimming
+        // Clean up the csv input by converting whitespace strings to a single space, and trimming
         var csvText = e.target.result.trim();
         csvText = csvText.replace(/\s\s+/g, ' ');
         buildTable(csvText);
@@ -106,4 +113,19 @@ function shuffleArray(array) {
         array[j] = temp;
     }
     return array;
+}
+
+function uploadQuiz() {
+    if(jQuery.isEmptyObject(answersArray)) {
+        alert("There's nothing to upload! Select a file first.");
+        return;
+    }
+    
+    var jsonAnswers = JSON.stringify(answersArray);
+
+    console.log(jsonAnswers);
+    console.log('uploadQuiz');
+    $.post('/upload', jsonAnswers, function(data, status) {
+        console.log(data + " " + status);
+    });
 }

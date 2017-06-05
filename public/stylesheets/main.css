@@ -39,15 +39,10 @@ body {
     font-weight: bold;
 }
 
-#file-display {
-    padding-top:10px;
-    padding-bottom:10px;
-}
-
-#validate-button, #file-picker-label {
+#validate-button, #file-picker-label, #save-button {
     background-color: limegreen;
     min-width: 10%;
-    border: 2px solid #1b1b1b;    
+    border: 2px solid #1b1b1b;
 }
 
 #file-picker-label {
@@ -55,26 +50,34 @@ body {
     line-height: 27px;
 }
 
-#top-bar-middle {
-    
-    top:10%;
-    
-    width:50%;
-    text-align: center;
-    margin: 0 auto;
+#save-button {
+    background-color: #cc0000;
+    margin-left: 10px;
+}
+
+#validate-button {
+    margin-left:auto;
 }
 
 input[type="file"] {
     display: none;
 }
 
+button:focus {
+    outline:0 !important;   /* Disable the blue outline - ugly against dark background */
+}
+
+/***** End top bar *****/
+
 #main-content {
     margin: 10px;
     margin-top: 100px;
 }
 
-button:focus {
-    outline:0 !important;   /* Disable the blue outline - ugly against dark background */
+#file-display, #score-display {
+    text-align:center;
+    font-weight:bold;
+    padding-bottom:5px;
 }
 
 table {

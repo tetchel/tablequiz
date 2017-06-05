@@ -1,8 +1,24 @@
 extends layout
+    
+block content
+    #top-bar
+        label#file-picker-label.btn.btn-default.btn-file
+            | Select a File
+            input#file-picker(type='file', accept='.csv, .txt', onchange='filePicked(this.files)')
 
-html
-  head
-    title= title
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    block content
+        button#save-button.btn.btn-default(onclick='uploadQuiz()')
+            | Upload This Quiz
+
+        button#validate-button.btn.btn-default(onclick='validate()')
+            | Validate
+
+    #main-content
+
+        #file-display
+            h3 ↖ Select a file!
+            // populated by file-picker.js
+
+        #score-display
+        // populated by validator.js
+
+        #table-div
