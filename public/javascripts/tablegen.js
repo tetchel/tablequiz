@@ -2,7 +2,7 @@
 
 // The first index is the question # (zero-indexed), the second index 
 // is the nth answer column corresponding to that question
-var answersArray = [];
+var tableArray = [];
 
 function filePicked(files) {    
     var file = files[0], 
@@ -13,7 +13,7 @@ function filePicked(files) {
         return;
     }
     
-    if(!jQuery.isEmptyObject(answersArray)) {
+    if(!jQuery.isEmptyObject(tableArray)) {
         var conf = confirm('Your current quiz will be lost. Are you sure you wish to continue?');
         if(!conf) {
             return;
@@ -24,55 +24,72 @@ function filePicked(files) {
     reader.readAsText(file, "UTF-8");
     
     reader.onload = function (e) {
+        // For the duration of this function, busy the cursor
+        $("body").css("cursor", "progress");
+        
         $("#file-display").html(file.name).show();
         $("#score-display").empty();
         
         // Clean up the csv input by converting whitespace strings to a single space, and trimming
         var csvText = e.target.result.trim();
         csvText = csvText.replace(/\s\s+/g, ' ');
-        buildTable(csvText);
+        tableArray = csvDataIntoArray(csvText);
+        
+        var tableHtml = buildTable(tableArray);
+        $("#table-div").html(tableHtml).show();
+        
+        $("body").css("cursor", "default");
     };
     reader.onerror = function (e) {
         $("#file-display").html(e.target.result).show();
     };
 }
 
-function buildTable(csvText) {
-    // For the duration of this function, busy the cursor
-    $("body").css("cursor", "progress");
-    
+function csvDataIntoArray(csvText) {
     // Split the CSV across newlines to get rows
     var lines = csvText.split(/[\r\n]+/g);
     
-    // Separate header since we don't want to randomize its position
-    var header = lines[0];
-    lines = lines.slice(1, lines.length);
-    //lines = shuffleArray(lines);
+    var arr = [];
     
-    var headerSplit = header.split(",");
-    var headerHtml = "<tr>";
+    // Map the question to the array of answers
     var i;
-    for(i = 0; i < headerSplit.length; i++) {
-        if(i == 0) {
-            headerHtml += "<th class=\"question-column\">";
-        }
-        else {
-            headerHtml += "<th>";
-        }
-        headerHtml += headerSplit[i] + "</th>";
-    }
-    headerHtml += "</tr>"
-    
-    // List of table rows, in HTML
-    var output = [];
-    output.push(headerHtml);
-    
     for (i = 0; i < lines.length - 1; i++) {
         // array of cells for this line - [0] is the question, rest are answers
         var line = lines[i].split(",");
         
-        // Map the question to the array of answers
-        answersArray[i] = line.slice(1, line.length);
+        arr[i] = line.slice(1, line.length);
+    }
+    
+    return arr;
+}
+
+function buildTable(tableArray) {    
+    // Separate header since we don't want to randomize its position
+    var header = tableArray[0];
+    var tableWithoutHeader = tableArray.slice(1, tableArray.length);
+    //tableArray = shuffleArray(tableArray);
+    
+    console.log(header);
+    var tableHeaderHtml = "<tr>";
+    var i;
+    for(i = 0; i < header.length; i++) {
+        if(i == 0) {
+            tableHeaderHtml += "<th class=\"question-column\">";
+        }
+        else {
+            tableHeaderHtml += "<th>";
+        }
+        tableHeaderHtml += header[i] + "</th>";
+    }
+    tableHeaderHtml += "</tr>"
+    
+    // List of table rows, in HTML
+    var output = [];
+    output.push(tableHeaderHtml);
+    // Output now consists of just the table header
+    
+    for (i = 0; i < tableWithoutHeader.length - 1; i++) {        
+        var line = tableWithoutHeader[i];
         
         // The row starts off with the question
         var row = "<tr><td>" + line[0] + "</td>";
@@ -80,8 +97,8 @@ function buildTable(csvText) {
         // Then we add one text box cell per answer
         for(j = 1; j < line.length; j++) {
             if(line[j] && line[j].length !== 0) {
-                // The ID corresponds to the index of the expected answer in answersArray
-                // answersArray[1][1] will have id 1_1
+                // The ID corresponds to the index of the expected answer in tableArray
+                // tableArray[1][1] will have id 1_1
                 var id = i + "_" + (j-1);
                 row += "<td><textarea class=\"answer-textarea\" id=\"" + id + "\">" + 
                     "</textarea>&nbsp;</td>";
@@ -89,16 +106,9 @@ function buildTable(csvText) {
         }
         row += "</tr>";
         output.push(row);
-    }
-    
-    //console.log(answersMap);
-    //console.log(output);
-    
+    }        
     output = "<table>" + output.join("") + "</table>";
-    
-    $("#table-div").html(output).show();
-    
-    $("body").css("cursor", "default");
+    return output;
 }
 
 /**
@@ -116,16 +126,18 @@ function shuffleArray(array) {
 }
 
 function uploadQuiz() {
-    if(jQuery.isEmptyObject(answersArray)) {
+    if(jQuery.isEmptyObject(tableArray)) {
         alert("There's nothing to upload! Select a file first.");
         return;
     }
     
-    var jsonAnswers = JSON.stringify(answersArray);
+    var jsonAnswers = JSON.stringify(tableArray);
 
     console.log(jsonAnswers);
     console.log('uploadQuiz');
-    $.post('/upload', jsonAnswers, function(data, status) {
+    $.post('/answersets', jsonAnswers, function(data, status) {
         console.log(data + " " + status);
     });
 }
+
+exports.buildTable = buildTable;

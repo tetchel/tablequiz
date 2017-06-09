@@ -21,8 +21,11 @@ function validate() {
         var iIndex = id.substr(0, id.indexOf("_"));
         var jIndex = id.substr(id.indexOf("_") + 1);
         
-        var text = $(this).val();        
-        var answer = answersArray[iIndex][jIndex];
+        var text = $(this).val();
+        
+        // NOTE THAT tableArray is a global in tablegen.js.
+        // This is probably not the best way to share the data.
+        var answer = tableArray[iIndex][jIndex];
         
         // Write either Correct or Wrong under each answer box
         var toAppend = "";
@@ -59,7 +62,7 @@ function setScore(correct, total) {
     scoreTotal = total;
     
     var percent = (correct / total) * 100;
-    percent = parseFloat(percent).toFixed(2);
+    percent = parseFloat(percent).toFixed(1);
 
     var spanClass = "";
     if(percent > 80) {

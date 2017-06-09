@@ -10,7 +10,10 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.3",
     "express": "~4.15.2",
+    "fs": "0.0.1-security",
     "jade": "~1.11.0",
-    "morgan": "~1.8.1"
+    "level": "^1.7.0",
+    "morgan": "~1.8.1",
+    "sillyid": "^0.2.0"
   }
 }
