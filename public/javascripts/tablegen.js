@@ -30,7 +30,8 @@ function filePicked(files) {
         $("#file-display").html(file.name).show();
         $("#score-display").empty();
         
-        // Clean up the csv input by converting whitespace strings to a single space, and trimming
+        // Clean up the csv input by 
+        // converting whitespace strings to a single space, and trimming
         var csvText = e.target.result.trim();
         csvText = csvText.replace(/\s\s+/g, ' ');
         tableArray = csvDataIntoArray(csvText);
@@ -53,11 +54,9 @@ function csvDataIntoArray(csvText) {
     
     // Map the question to the array of answers
     var i;
-    for (i = 0; i < lines.length - 1; i++) {
+    for (i = 0; i < lines.length; i++) {
         // array of cells for this line - [0] is the question, rest are answers
-        var line = lines[i].split(",");
-        
-        arr[i] = line.slice(1, line.length);
+        arr[i] = lines[i].split(",");
     }
     
     return arr;
@@ -66,10 +65,10 @@ function csvDataIntoArray(csvText) {
 function buildTable(tableArray) {    
     // Separate header since we don't want to randomize its position
     var header = tableArray[0];
-    var tableWithoutHeader = tableArray.slice(1, tableArray.length);
+    // Remove the header
+    tableArray.splice(0, 1);
     //tableArray = shuffleArray(tableArray);
     
-    console.log(header);
     var tableHeaderHtml = "<tr>";
     var i;
     for(i = 0; i < header.length; i++) {
@@ -88,8 +87,8 @@ function buildTable(tableArray) {
     output.push(tableHeaderHtml);
     // Output now consists of just the table header
     
-    for (i = 0; i < tableWithoutHeader.length - 1; i++) {        
-        var line = tableWithoutHeader[i];
+    for (i = 0; i < tableArray.length; i++) {        
+        var line = tableArray[i];
         
         // The row starts off with the question
         var row = "<tr><td>" + line[0] + "</td>";
@@ -99,7 +98,8 @@ function buildTable(tableArray) {
             if(line[j] && line[j].length !== 0) {
                 // The ID corresponds to the index of the expected answer in tableArray
                 // tableArray[1][1] will have id 1_1
-                var id = i + "_" + (j-1);
+                // Recall that tableArray[0][n] will hold questions
+                var id = i + "_" + (j);
                 row += "<td><textarea class=\"answer-textarea\" id=\"" + id + "\">" + 
                     "</textarea>&nbsp;</td>";
             }

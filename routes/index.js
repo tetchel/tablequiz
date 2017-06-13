@@ -40,6 +40,7 @@ router.get('/answersets/:setId', function(req, res, next) {
     db.get(req.params.setId, function(err, value) {
         if(err) return console.log('Error retrieving ' + setId, err);
         
+        value = JSON.parse(value);
         console.log(value);
         var tableHtml = tableBuilder.buildTable(value);
         console.log('now for the table:');
