@@ -7,16 +7,8 @@ var db = levelup('./answers.db');
 var SillyId = require('sillyid');
 var sid_gen = new SillyId();
 
-// "import" the client-side javascript code used to generate the table.
-// there must be a better way
-/*
-var fs = require('fs');
-var vm = require('vm');
-var path = require('path');
-var tablegen = fs.readFileSync(path.join(__dirname, '../public/javascripts/tablegen.js')).toString();
-console.log(tablegen);
-vm.runInNewContext(tablegen, context, )
-*/
+var bodyParser = require('body-parser');
+
 var tableBuilder = require('../public/javascripts/tablegen.js');
 
 /* GET home page. */
@@ -27,29 +19,57 @@ router.get('/', function(req, res, next) {
 router.post('/answersets', function(req, res, next) {
     var id = sid_gen.generate();
     
-    var body = JSON.stringify(req.body);
+    // For some reason, the data I want is the first key in the json.
+    // This is done by the requesting code, or something.
+    var body = '';
+    for(var key in req.body) {
+        if(body) {
+            console.log('Request body was bigger than expected!');
+        }
+        body += key;
+    }    
+    
+    body = JSON.stringify(body);
     db.put(id, body, function(err) {
         if(err) return console.log('Error putting ' + id, err);
         
         console.log("successfully stored " + id);
     });
-    res.redirect('/answersets/'+id);
+    res.status(201).redirect('/answersets/'+id);
 });
 
 router.get('/answersets/:setId', function(req, res, next) {
     db.get(req.params.setId, function(err, value) {
-        if(err) return console.log('Error retrieving ' + setId, err);
+        if(err) {
+            // TODO test that this goes to 404 handler
+            next(err);
+        }
+    
+        // "Convert" the raw string to a recognizable 2d array format
+        // Remove quotes at start and end
+        value = value.substr(1, value.length - 2);
+        // Replace all escaped quotes with regular ones
+        value = value.replace(/\\"/g, '"');
+        // Assemble the actual array, now that we have parseable json
+        var tableArray = JSON.parse(value);
         
-        value = JSON.parse(value);
-        console.log(value);
-        var tableHtml = tableBuilder.buildTable(value);
-        console.log('now for the table:');
-        console.log(tableHtml);
-        //res.render('index');
-        //return res.send(tableHtml);
+        var tableHtml = tableBuilder.buildTable(tableArray);        
+        
+        // Render the page, replace the table with the one we've generated,
+        // and sent it to the client
+        res.render('index', function(err, html) {
+            if(err) next(err);
+            
+            var tableDiv = '"table-div">';
+            var insertIndex = html.lastIndexOf(tableDiv) + tableDiv.length;
+            // Put the tableHtml into the table-div
+            html = html.substr(0, insertIndex) + tableHtml + 
+                html.substr(insertIndex, html.length);
+            
+            res.send(html);
+        });
+        
     });
 });
-
-
 
 module.exports = router;

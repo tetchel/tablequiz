@@ -4,6 +4,13 @@
 // is the nth answer column corresponding to that question
 var tableArray = [];
 
+window.onbeforeunload = function() {
+    /*if(!jQuery.isEmptyObject(tableArray)) {
+        return "Are you sure you want to leave? Your current quiz will be lost!";
+    }*/
+    return;
+}
+
 function filePicked(files) {    
     var file = files[0], 
         reader = new FileReader();
@@ -14,13 +21,15 @@ function filePicked(files) {
     }
     
     if(!jQuery.isEmptyObject(tableArray)) {
-        var conf = confirm('Your current quiz will be lost. Are you sure you wish to continue?');
-        if(!conf) {
+        var conf = confirm('Your current quiz will be lost. ' + 
+                           'Are you sure you wish to continue?');
+        
+        if(conf !== true) {
             return;
         }
     }
     
-    //console.log("Uploaded " + file.name + ", size: " + (file.size / 1024) + "kb");
+    console.log("Uploaded " + file.name + ", size: " + (file.size / 1024) + "kb");
     reader.readAsText(file, "UTF-8");
     
     reader.onload = function (e) {
@@ -131,12 +140,12 @@ function uploadQuiz() {
         return;
     }
     
-    var jsonAnswers = JSON.stringify(tableArray);
-
-    console.log(jsonAnswers);
-    console.log('uploadQuiz');
-    $.post('/answersets', jsonAnswers, function(data, status) {
-        console.log(data + " " + status);
+    var jsonTable = JSON.stringify(tableArray);
+    
+    //console.log(jsonAnswers);
+    //console.log('uploadQuiz');
+    $.post('/answersets', jsonTable, function(data, status) {
+        
     });
 }
 
