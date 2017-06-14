@@ -3,13 +3,7 @@
 // The first index is the question # (zero-indexed), the second index 
 // is the nth answer column corresponding to that question
 var tableArray = [];
-
-window.onbeforeunload = function() {
-    /*if(!jQuery.isEmptyObject(tableArray)) {
-        return "Are you sure you want to leave? Your current quiz will be lost!";
-    }*/
-    return;
-}
+var currentFile = '';
 
 function filePicked(files) {    
     var file = files[0], 
@@ -36,7 +30,11 @@ function filePicked(files) {
         // For the duration of this function, busy the cursor
         $("body").css("cursor", "progress");
         
-        $("#file-display").html(file.name).show();
+        currentFile = file.name;
+        // remove extension
+        currentFile = currentFile.substr(0, currentFile.lastIndexOf('.'));
+        
+        $("#table-header").html(currentFile).show();
         $("#score-display").empty();
         
         // Clean up the csv input by 
@@ -51,7 +49,7 @@ function filePicked(files) {
         $("body").css("cursor", "default");
     };
     reader.onerror = function (e) {
-        $("#file-display").html(e.target.result).show();
+        $("#table-header").html(e.target.result).show();
     };
 }
 
@@ -74,8 +72,8 @@ function csvDataIntoArray(csvText) {
 function buildTable(tableArray) {    
     // Separate header since we don't want to randomize its position
     var header = tableArray[0];
-    // Remove the header
-    tableArray.splice(0, 1);
+    
+    //tableArray.splice(0, 1);
     //tableArray = shuffleArray(tableArray);
     
     var tableHeaderHtml = "<tr>";
@@ -96,7 +94,8 @@ function buildTable(tableArray) {
     output.push(tableHeaderHtml);
     // Output now consists of just the table header
     
-    for (i = 0; i < tableArray.length; i++) {        
+    // Start at 1 to skip over the header
+    for (i = 1; i < tableArray.length; i++) {        
         var line = tableArray[i];
         
         // The row starts off with the question
@@ -140,12 +139,18 @@ function uploadQuiz() {
         return;
     }
     
-    var jsonTable = JSON.stringify(tableArray);
+    var quizName = prompt('Please enter a name for this quiz.', currentFile);
+    var toPost = {
+        quizName : quizName,
+        table : tableArray
+    };
+    console.log(toPost);
     
-    //console.log(jsonAnswers);
-    //console.log('uploadQuiz');
-    $.post('/answersets', jsonTable, function(data, status) {
-        
+    $.post('/tables', toPost, function(data, status) {
+        // clear the old table
+        $('#table-div').empty();
+        // Response is a JSO with the URL of the newly created table.
+        window.location.href = data.redirect;
     });
 }
 

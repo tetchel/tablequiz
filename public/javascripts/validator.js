@@ -34,6 +34,7 @@ function validate() {
             correct++;
         }
         else {
+            // Wrong answers can also be doubleclicked to change to right answers
             toAppend = "<span class=\"" + wrongClass + "\"" +
                     "ondblclick=\"overrideValidation(event)\">" +
                     "&#10006; Expected: " + answer + "</span>";

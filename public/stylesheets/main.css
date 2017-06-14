@@ -74,10 +74,14 @@ button:focus {
     margin-top: 100px;
 }
 
-#file-display, #score-display {
+#table-header, #score-display {
     text-align:center;
     font-weight:bold;
     padding-bottom:5px;
+}
+
+#table-header {
+    font-size:20px;
 }
 
 table {
