@@ -1,0 +1,8 @@
+extends quiz
+
+block contextual-buttons
+    a.first-button.btn.btn-default(href='/' title='This quiz will still be here if you come back.')
+        | Back
+    
+    button.second-button.btn.btn-default(onclick='copyRelPath()')
+        | Copy A Link

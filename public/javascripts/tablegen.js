@@ -1,9 +1,8 @@
 "use strict";
 
-// The first index is the question # (zero-indexed), the second index 
-// is the nth answer column corresponding to that question
-var tableArray = [];
-var currentFile = '';
+function isTablePopulated() {
+    return $('#table-div').text().length > 0;
+}
 
 function filePicked(files) {    
     var file = files[0], 
@@ -14,12 +13,19 @@ function filePicked(files) {
         return;
     }
     
-    if(!jQuery.isEmptyObject(tableArray)) {
-        var conf = confirm('Your current quiz will be lost. ' + 
-                           'Are you sure you wish to continue?');
-        
-        if(conf !== true) {
-            return;
+    if(isTablePopulated()) {
+        if(window.location.pathname == '/') {
+            var conf = confirm('Your current quiz will be lost. ' + 
+                    'Are you sure you wish to continue?');
+            
+            if(conf !== true) {
+                return;
+            }
+        }
+        else {
+            // Go back to root, then continue
+            // TODO try this
+            window.location.href = '/';
         }
     }
     
@@ -30,7 +36,7 @@ function filePicked(files) {
         // For the duration of this function, busy the cursor
         $("body").css("cursor", "progress");
         
-        currentFile = file.name;
+        var currentFile = file.name;
         // remove extension
         currentFile = currentFile.substr(0, currentFile.lastIndexOf('.'));
         
@@ -41,7 +47,7 @@ function filePicked(files) {
         // converting whitespace strings to a single space, and trimming
         var csvText = e.target.result.trim();
         csvText = csvText.replace(/\s\s+/g, ' ');
-        tableArray = csvDataIntoArray(csvText);
+        var tableArray = csvDataIntoArray(csvText);
         
         var tableHtml = buildTable(tableArray);
         $("#table-div").html(tableHtml).show();
@@ -71,9 +77,8 @@ function csvDataIntoArray(csvText) {
 
 function buildTable(tableArray) {    
     // Separate header since we don't want to randomize its position
-    var header = tableArray[0];
+    var header = tableArray[0];    
     
-    //tableArray.splice(0, 1);
     //tableArray = shuffleArray(tableArray);
     
     var tableHeaderHtml = "<tr>";
@@ -104,12 +109,10 @@ function buildTable(tableArray) {
         // Then we add one text box cell per answer
         for(j = 1; j < line.length; j++) {
             if(line[j] && line[j].length !== 0) {
-                // The ID corresponds to the index of the expected answer in tableArray
-                // tableArray[1][1] will have id 1_1
-                // Recall that tableArray[0][n] will hold questions
-                var id = i + "_" + (j);
-                row += "<td><textarea class=\"answer-textarea\" id=\"" + id + "\">" + 
-                    "</textarea>&nbsp;</td>";
+                // The data-answer attribute contains the answer for this textarea.
+                row += '<td><textarea class=\"answer-textarea\"' +
+                    'data-answer=\"' + tableArray[i][j] + '\">' +
+                    '</textarea>&nbsp;</td>';
             }
         }
         row += "</tr>";
@@ -134,24 +137,76 @@ function shuffleArray(array) {
 }
 
 function uploadQuiz() {
-    if(jQuery.isEmptyObject(tableArray)) {
+    if(!isTablePopulated()) {
         alert("There's nothing to upload! Select a file first.");
         return;
     }
     
-    var quizName = prompt('Please enter a name for this quiz.', currentFile);
+    var quizName = prompt('Please enter a name for this quiz.', $('#table-header').text());
+    if(quizName === null) {
+        // cancel was pressed
+        return;
+    }
+    
+    var tableHtml = $('#table-div').html();
     var toPost = {
         quizName : quizName,
-        table : tableArray
+        table : tableHtml
     };
-    console.log(toPost);
     
-    $.post('/tables', toPost, function(data, status) {
-        // clear the old table
-        $('#table-div').empty();
-        // Response is a JSO with the URL of the newly created table.
-        window.location.href = data.redirect;
+    $.ajax({
+        type : 'POST',
+        url : '/quizzes',
+        data : toPost,
+        dataType : 'json',
+        timeout : 5000,
+        success : function(data) {
+                // clear the old table
+            $('#table-div').empty();
+            // Response is a JSO with the URL of the newly created table.
+            window.location.href = data.redirect;
+        },
+        error: function(request, status, err) {
+            console.log('Quiz upload failed. Status: ' + status + ' err: ' + err);
+            if(status == "error") {
+                alert('Upload failed. This means the server is currently down. Please try again later.');
+            }
+            else if(status == "timeout") {
+                alert('Upload timed out. This means the server is currently down. Please try again later.');
+            }
+            else {
+                alert('Upload failed for an unexpected reason: ' + status);
+            }            
+        }
     });
+}
+
+function copyRelPath() {
+    copyToClipboard(window.location.href);
+}
+
+function copyToClipboard(text) {
+    // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
+    if (window.clipboardData && window.clipboardData.setData) {
+        // IE specific code path to prevent textarea being shown while dialog is visible.
+        return clipboardData.setData("Text", text); 
+
+    } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
+        var textarea = document.createElement("textarea");
+        textarea.textContent = text;
+        textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+            return document.execCommand("copy");  // Security exception may be thrown by some browsers.
+        } catch (ex) {
+            console.log('Couldn\'t copy to clipboard ; user must do it manually');
+            console.log(ex);
+            prompt('Copy the link below:', text);         
+        } finally {
+            document.body.removeChild(textarea);
+        }
+    }
 }
 
 exports.buildTable = buildTable;

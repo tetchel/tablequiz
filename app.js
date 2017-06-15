@@ -23,7 +23,7 @@ app.use('/', index);
 // catch 404
 app.get('*', function(req, res, next) {
     res.status(404)
-        .send('<h2>404\'d!</h2><p>Sorry, <b>' + req.path + '</b> does not exist. '+
+        .send('<h2>404\</h2><p>Sorry, <b>' + req.path + '</b> does not exist. '+
               '<a href="/">Go back home</a></p>');
 });
 

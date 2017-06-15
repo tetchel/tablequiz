@@ -39,18 +39,18 @@ body {
     font-weight: bold;
 }
 
-#validate-button, #file-picker-label, #save-button {
+#validate-button, .first-button, .second-button {
     background-color: limegreen;
     min-width: 10%;
     border: 2px solid #1b1b1b;
 }
 
-#file-picker-label {
+.first-button {
     background-color: cornflowerblue;    
     line-height: 27px;
 }
 
-#save-button {
+.second-button {
     background-color: #cc0000;
     margin-left: 10px;
 }

@@ -1,42 +1,35 @@
 "use strict";
 
-var correctClass = "correct-answer";
-var wrongClass = "wrong-answer";
-var correctString = "&#10004; Correct";
+var CLASS_CORRECT = "correct-answer";
+var CLASS_WRONG = "wrong-answer";
+var CORRECT = "&#10004; Correct";
 
 function validate() {
     $("body").css("cursor", "progress");
     
     // Delete previous validation results
-    $('.' + correctClass).remove();
-    $('.' + wrongClass).remove();
+    $('.' + CLASS_CORRECT).remove();
+    $('.' + CLASS_WRONG).remove();
     
     var answerTextBoxes = $(".answer-textarea");
     // track # of questions right/wrong
-    var correct = 0, total = 0;
+    var CORRECT = 0, total = 0;
         
     answerTextBoxes.each(function() {
-        var id = $(this).attr('id');
-        // Recall the element's ID is its answer index i_j
-        var iIndex = id.substr(0, id.indexOf("_"));
-        var jIndex = id.substr(id.indexOf("_") + 1);
-        
+        var answer = $(this).data('answer');
         var text = $(this).val();
-        
-        // NOTE THAT tableArray is a global in tablegen.js.
-        // This is probably not the best way to share the data.
-        var answer = tableArray[iIndex][jIndex];
         
         // Write either Correct or Wrong under each answer box
         var toAppend = "";
         if(isCorrectAnswer(text, answer)) {
-            toAppend = "<span class=\"" + correctClass + "\">" + correctString + "</span>";
-            correct++;
+            toAppend = "<span class=\"" + CLASS_CORRECT + "\">" + CORRECT + "</span>";
+            CORRECT++;
         }
         else {
             // Wrong answers can also be doubleclicked to change to right answers
-            toAppend = "<span class=\"" + wrongClass + "\"" +
-                    "ondblclick=\"overrideValidation(event)\">" +
+            toAppend = "<span class=\"" + CLASS_WRONG + "\"" +
+                    "ondblclick=\"overrideValidation(event)\"" +
+                    "title=\"Double-click if you insist this is correct!\">" +
                     "&#10006; Expected: " + answer + "</span>";
         }
         
@@ -49,7 +42,7 @@ function validate() {
         alert("There are no answers to validate.");
     }
     else {
-        setScore(correct, total);
+        setScore(CORRECT, total);
     }
         
     $("body").css("cursor", "default");
@@ -58,22 +51,22 @@ function validate() {
 var scoreCorrect = 0;
 var scoreTotal = 0;
 
-function setScore(correct, total) {
-    scoreCorrect = correct;
+function setScore(CORRECT, total) {
+    scoreCorrect = CORRECT;
     scoreTotal = total;
     
-    var percent = (correct / total) * 100;
+    var percent = (CORRECT / total) * 100;
     percent = parseFloat(percent).toFixed(1);
 
     var spanClass = "";
     if(percent > 80) {
-        spanClass = correctClass;
+        spanClass = CLASS_CORRECT;
     }
     else if(percent < 60) {
-        spanClass = wrongClass;
+        spanClass = CLASS_WRONG;
     }
 
-    $("#score-display").html(correct + " / " + total + " &nbsp; | &nbsp; " +
+    $("#score-display").html(CORRECT + " / " + total + " &nbsp; | &nbsp; " +
         "<span class=\"" + spanClass + "\">"+ percent + " %</span>").show();
 }
 
@@ -102,6 +95,6 @@ function isCorrectAnswer(actual, expected) {
 
 function overrideValidation(event) {
     setScore(scoreCorrect + 1, scoreTotal);
-    event.target.innerHTML = correctString;
-    event.target.className = correctClass;
+    event.target.innerHTML = CORRECT;
+    event.target.className = CLASS_CORRECT;
 }
