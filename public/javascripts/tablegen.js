@@ -137,17 +137,22 @@ function shuffleArray(array) {
 }
 
 function uploadQuiz() {
+    $("body").css("cursor", "progress");
+    
     if(!isTablePopulated()) {
         alert("There's nothing to upload! Select a file first.");
+        $("body").css("cursor", "default");
         return;
     }
     
     var quizName = prompt('Please enter a name for this quiz.', $('#table-header').text());
     if(quizName === null) {
         // cancel was pressed
+        $("body").css("cursor", "default");
         return;
     }
     
+    clearValidation();
     var tableHtml = $('#table-div').html();
     var toPost = {
         quizName : quizName,
@@ -161,8 +166,9 @@ function uploadQuiz() {
         dataType : 'json',
         timeout : 5000,
         success : function(data) {
-                // clear the old table
+            // clear the old table
             $('#table-div').empty();
+            clearValidation();
             // Response is a JSO with the URL of the newly created table.
             window.location.href = data.redirect;
         },
@@ -179,34 +185,8 @@ function uploadQuiz() {
             }            
         }
     });
-}
-
-function copyRelPath() {
-    copyToClipboard(window.location.href);
-}
-
-function copyToClipboard(text) {
-    // https://stackoverflow.com/questions/400212/how-do-i-copy-to-the-clipboard-in-javascript
-    if (window.clipboardData && window.clipboardData.setData) {
-        // IE specific code path to prevent textarea being shown while dialog is visible.
-        return clipboardData.setData("Text", text); 
-
-    } else if (document.queryCommandSupported && document.queryCommandSupported("copy")) {
-        var textarea = document.createElement("textarea");
-        textarea.textContent = text;
-        textarea.style.position = "fixed";  // Prevent scrolling to bottom of page in MS Edge.
-        document.body.appendChild(textarea);
-        textarea.select();
-        try {
-            return document.execCommand("copy");  // Security exception may be thrown by some browsers.
-        } catch (ex) {
-            console.log('Couldn\'t copy to clipboard ; user must do it manually');
-            console.log(ex);
-            prompt('Copy the link below:', text);         
-        } finally {
-            document.body.removeChild(textarea);
-        }
-    }
+    
+    $("body").css("cursor", "default");
 }
 
 exports.buildTable = buildTable;

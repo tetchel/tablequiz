@@ -4,16 +4,19 @@ var CLASS_CORRECT = "correct-answer";
 var CLASS_WRONG = "wrong-answer";
 var CORRECT = "&#10004; Correct";
 
-function validate() {
-    $("body").css("cursor", "progress");
-    
-    // Delete previous validation results
+function clearValidation() {
     $('.' + CLASS_CORRECT).remove();
     $('.' + CLASS_WRONG).remove();
+}
+
+function validate() {
+    $("body").css("cursor", "progress");    
+    
+    clearValidation();
     
     var answerTextBoxes = $(".answer-textarea");
     // track # of questions right/wrong
-    var CORRECT = 0, total = 0;
+    var numCorrect = 0, total = 0;
         
     answerTextBoxes.each(function() {
         var answer = $(this).data('answer');
@@ -23,7 +26,7 @@ function validate() {
         var toAppend = "";
         if(isCorrectAnswer(text, answer)) {
             toAppend = "<span class=\"" + CLASS_CORRECT + "\">" + CORRECT + "</span>";
-            CORRECT++;
+            numCorrect++;
         }
         else {
             // Wrong answers can also be doubleclicked to change to right answers
@@ -42,7 +45,7 @@ function validate() {
         alert("There are no answers to validate.");
     }
     else {
-        setScore(CORRECT, total);
+        setScore(numCorrect, total);
     }
         
     $("body").css("cursor", "default");
@@ -51,11 +54,11 @@ function validate() {
 var scoreCorrect = 0;
 var scoreTotal = 0;
 
-function setScore(CORRECT, total) {
-    scoreCorrect = CORRECT;
+function setScore(numCorrect, total) {
+    scoreCorrect = numCorrect;
     scoreTotal = total;
     
-    var percent = (CORRECT / total) * 100;
+    var percent = (numCorrect / total) * 100;
     percent = parseFloat(percent).toFixed(1);
 
     var spanClass = "";
@@ -66,7 +69,7 @@ function setScore(CORRECT, total) {
         spanClass = CLASS_WRONG;
     }
 
-    $("#score-display").html(CORRECT + " / " + total + " &nbsp; | &nbsp; " +
+    $("#score-display").html(numCorrect + " / " + total + " &nbsp; | &nbsp; " +
         "<span class=\"" + spanClass + "\">"+ percent + " %</span>").show();
 }
 
