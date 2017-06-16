@@ -5,7 +5,7 @@ block content
         block contextual-buttons
             label.first-button.btn.btn-default.btn-file(title='Upload a file to transform into a table')
                 | Select a File
-                input#file-picker(type='file', accept='.csv, .txt', onchange='filePicked(this.files)')
+                input#file-picker(type='file', accept='.csv, .xls, .xlsx', onchange='filePicked(this.files)')
 
             button.second-button.btn.btn-default(title='Upload this quiz so that it will be saved, and can be shared' onclick='uploadQuiz()')
                 | Upload This Quiz

@@ -4,62 +4,95 @@ function isTablePopulated() {
     return $('#table-div').text().length > 0;
 }
 
+// Return true if user is on the root page and has uploaded a table.
+function shouldConfirmExit() {
+    return isTablePopulated() && window.location.pathname == '/';
+}
+
 function filePicked(files) {    
-    var file = files[0], 
-        reader = new FileReader();
+    var file = files[0];
     
     if(files.length > 1) {
         alert("Only upload one file at a time.");
         return;
     }
     
-    if(isTablePopulated()) {
-        if(window.location.pathname == '/') {
-            var conf = confirm('Your current quiz will be lost. ' + 
-                    'Are you sure you wish to continue?');
-            
-            if(conf !== true) {
-                return;
-            }
-        }
-        else {
-            // Go back to root, then continue
-            // TODO try this
-            window.location.href = '/';
+    if(shouldConfirmExit()) {
+        var conf = confirm('Your current quiz will be lost. ' + 
+            'Are you sure you wish to continue?');
+
+        if(conf !== true) {
+            return;
         }
     }
     
     console.log("Uploaded " + file.name + ", size: " + (file.size / 1024) + "kb");
-    reader.readAsText(file, "UTF-8");
     
-    reader.onload = function (e) {
-        // For the duration of this function, busy the cursor
-        $("body").css("cursor", "progress");
-        
-        var currentFile = file.name;
-        // remove extension
-        currentFile = currentFile.substr(0, currentFile.lastIndexOf('.'));
-        
-        $("#table-header").html(currentFile).show();
-        $("#score-display").empty();
-        
-        // Clean up the csv input by 
-        // converting whitespace strings to a single space, and trimming
-        var csvText = e.target.result.trim();
-        csvText = csvText.replace(/\s\s+/g, ' ');
-        var tableArray = csvDataIntoArray(csvText);
-        
-        var tableHtml = buildTable(tableArray);
-        $("#table-div").html(tableHtml).show();
-        
-        $("body").css("cursor", "default");
-    };
+    var fileName = file.name;        
+    var extensionIndex = fileName.lastIndexOf('.');
+    var extension = fileName.substring(extensionIndex, fileName.length);
+    fileName = fileName.substr(0, extensionIndex);
+    
+    var reader = new FileReader();
     reader.onerror = function (e) {
-        $("#table-header").html(e.target.result).show();
+        $("#table-header").html('<span class=\"wrong-answer\">'
+                                    + e.target.result + '</span>').show();
     };
+    
+    var csvData = '';
+    if(extension == '.csv') {
+        reader.readAsText(file, "UTF-8");
+        reader.onload = function (e) {
+            // Trim whitespace, and replace any spaces in a row with one space
+            csvData = e.target.result.trim().replace(/\s\s+/g, ' ');
+        }
+    }
+    else if(extension == '.xls' || extension == '.xlsx') {
+        reader.readAsBinaryString(file);        
+        reader.onload = function (e) {            
+            var workbook = XLSX.read(e.target.result, {type: 'binary'});
+            var numSheets = workbook.Sheets.length;
+            // TODO test multisheets
+            var sheet = 0;
+            if(numSheets > 1) {
+                var validSheet = false;
+                var msg = 'This workbook has ' + numSheets + ' sheets. ' +
+                            'Which one would you like to import?';
+                
+                while(!validSheet) {
+                    sheet = prompt(msg, '1').trim();
+
+                    if(isNaN(sheet) || sheet > numSheets) {
+                        msg = '"' + sheet + '" is not a valid sheet number. Must be 1 to ' + numSheets;
+                    }
+                    else {
+                        validSheet = true;
+                    }
+                }
+            }
+            console.log(workbook.Sheets);
+            console.log(workbook.Sheets[sheet]);
+            csvData = XLSX.utils.sheet_to_csv(workbook.Sheets[sheet]);
+            console.log(csvData);
+        }
+    }
+    else {
+        $('#table-header').html('Unexpected file type ' + extension);
+    }
+    
+    var tableArray = csvToArray(csvData);
+    onUploadSuccess(fileName, tableArray);
+    
 }
 
-function csvDataIntoArray(csvText) {
+function onUploadSuccess(fileName, tableArray) {
+    $("#table-header").html(fileName).show();
+    $("#score-display").empty();
+    var tableHtml = buildTable(tableArray);
+    $("#table-div").html(tableHtml).show();
+}
+
+function csvToArray(csvText) {
     // Split the CSV across newlines to get rows
     var lines = csvText.split(/[\r\n]+/g);
     
@@ -73,6 +106,32 @@ function csvDataIntoArray(csvText) {
     }
     
     return arr;
+}
+
+function xlsToArray(xlsContents) {
+    var toPost = {
+        contents : xlsContents
+    }; 
+    
+    $.ajax({
+        type : 'POST',
+        url : '/xlsToArray',
+        data : toPost,
+        dataType : 'json',
+        timeout : 5000,
+        success : function(data) {
+            // Response is an array containing the spreadsheet's rows.
+            // Convert to a 2d array by splitting over commas
+            
+        },
+        error: function(request, status, err) {
+            console.log('Error uploading xls. status=' + status + ' err=' + err);
+            if(status == "error") {
+                status = err;
+            }
+            //$('#table-header').html('Error uploading Excel file: );
+        }
+    });
 }
 
 function buildTable(tableArray) {    

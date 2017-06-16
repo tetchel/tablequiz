@@ -1,10 +1,10 @@
 var express = require('express');
 var router = express.Router();
 
+var xlsx = require('xlsx');
+
 var levelup = require('level');
 var db = levelup('./quizzes.db');
-
-var bodyParser = require('body-parser');
 
 var QUIZ_ROUTE = '/quizzes';
 
@@ -25,15 +25,13 @@ router.post(QUIZ_ROUTE, function(req, res, next) {
     db.put(id, toStore, function(err) {
         if(err) return console.log('Error putting ' + id, err);
         
-        console.log("successfully stored " + id);
         var newUrl = QUIZ_ROUTE + '/' + id;
         res.status(201).send({ redirect : newUrl });
     });
 });
 
 router.get(QUIZ_ROUTE + '/:quizName', function(req, res, next) {
-    var quizName = req.params.quizName;    
-    console.log('get quiz with id ' + quizName);
+    var quizName = req.params.quizName;
     
     db.get(quizName, function(err, value) {
         if(err) {
@@ -51,6 +49,25 @@ router.get(QUIZ_ROUTE + '/:quizName', function(req, res, next) {
         // and sent it to the client
         return res.render('saved-quiz', { tableHeader : quizName, tableData : tableHtml });        
     });
+});
+
+// This endpoint receives an xls/xlsx file 
+// and responds with an array representing the spreadsheet's rows.
+router.post('/xlsToArray', function(req, res, next) {
+    console.log('xlsToArray');
+    var xlsContents = req.body['contents'];
+    var rows = [];
+    
+    var xlsParsed = xlsx.utils.sheet_to_csv()
+    console.log(xlsParsed.length + ' sheets');
+    // Ignore all but the first sheet, for now.
+    var sheet = xlsParsed[0];    
+    for(var i = 0; i < sheet['data'].length; i++) {
+        rows.push(sheet['data'][j]);
+    }
+    console.log(rows);
+    
+    return res.send({ data : rows });
 });
 
 module.exports = router;
