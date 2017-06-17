@@ -43,7 +43,7 @@ function filePicked(files) {
         reader.readAsText(file, "UTF-8");
         reader.onload = function (e) {
             var csvData = e.target.result;
-            console.log('Success reading csv ' + filename);
+            console.log('Success reading csv ' + fileName);
             onUploadSuccess(fileName, csvData);
         }
     }
@@ -51,7 +51,8 @@ function filePicked(files) {
         reader.readAsBinaryString(file);        
         reader.onload = function (e) {            
             var workbook = XLSX.read(e.target.result, {type: 'binary'});
-            var numSheets = workbook.Sheets.length;
+            var numSheets = workbook.SheetNames.length;
+            console.log(numSheets + ' sheets');
             // TODO test multisheets
             var sheet = 0;
             if(numSheets > 1) {
@@ -60,13 +61,18 @@ function filePicked(files) {
                             'Which one would you like to import?';
                 
                 while(!validSheet) {
-                    sheet = prompt(msg, '1').trim();
+                    sheet = prompt(msg, '1');
+                    if(sheet) { 
+                        sheet = sheet.trim(); 
+                    }
 
-                    if(isNaN(sheet) || sheet > numSheets) {
+                    if(isNaN(sheet) || sheet > numSheets || sheet < 1 || !Number.isInteger(+sheet)) {
                         msg = '"' + sheet + '" is not a valid sheet number. Must be 1 to ' + numSheets;
                     }
                     else {
                         validSheet = true;
+                        // human to computer index conversion
+                        sheet = sheet - 1;
                     }
                 }
             }

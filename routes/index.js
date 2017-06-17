@@ -13,7 +13,7 @@ var TABLE_KEY = 'table';
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('quiz', { tableHeader : '↖ Select a file!', tableData : '' });
+  res.render('quiz', { title : "TableQuiz", tableHeader : '↖ Select a file!', tableData : '' });
 });
 
 router.post(QUIZ_ROUTE, function(req, res, next) {
@@ -47,7 +47,7 @@ router.get(QUIZ_ROUTE + '/:quizName', function(req, res, next) {
         
         // Render the page, replace the table with the one we've retrieved
         // and sent it to the client
-        return res.render('saved-quiz', { tableHeader : quizName, tableData : tableHtml });        
+        return res.render('saved-quiz', { title : quizName, tableHeader : quizName, tableData : tableHtml });        
     });
 });
 
