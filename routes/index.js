@@ -51,23 +51,4 @@ router.get(QUIZ_ROUTE + '/:quizName', function(req, res, next) {
     });
 });
 
-// This endpoint receives an xls/xlsx file 
-// and responds with an array representing the spreadsheet's rows.
-router.post('/xlsToArray', function(req, res, next) {
-    console.log('xlsToArray');
-    var xlsContents = req.body['contents'];
-    var rows = [];
-    
-    var xlsParsed = xlsx.utils.sheet_to_csv()
-    console.log(xlsParsed.length + ' sheets');
-    // Ignore all but the first sheet, for now.
-    var sheet = xlsParsed[0];    
-    for(var i = 0; i < sheet['data'].length; i++) {
-        rows.push(sheet['data'][j]);
-    }
-    console.log(rows);
-    
-    return res.send({ data : rows });
-});
-
 module.exports = router;

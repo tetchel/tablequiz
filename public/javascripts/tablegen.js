@@ -35,16 +35,16 @@ function filePicked(files) {
     
     var reader = new FileReader();
     reader.onerror = function (e) {
-        $("#table-header").html('<span class=\"wrong-answer\">'
+        $("#table-header").html('<span class=\"wrong-answer\">Error reading ' + fileName
                                     + e.target.result + '</span>').show();
     };
     
-    var csvData = '';
     if(extension == '.csv') {
         reader.readAsText(file, "UTF-8");
         reader.onload = function (e) {
-            // Trim whitespace, and replace any spaces in a row with one space
-            csvData = e.target.result.trim().replace(/\s\s+/g, ' ');
+            var csvData = e.target.result;
+            console.log('Success reading csv ' + filename);
+            onUploadSuccess(fileName, csvData);
         }
     }
     else if(extension == '.xls' || extension == '.xlsx') {
@@ -70,26 +70,27 @@ function filePicked(files) {
                     }
                 }
             }
-            console.log(workbook.Sheets);
-            console.log(workbook.Sheets[sheet]);
-            csvData = XLSX.utils.sheet_to_csv(workbook.Sheets[sheet]);
-            console.log(csvData);
+            var csvData = XLSX.utils.sheet_to_csv(workbook.Sheets[workbook.SheetNames[sheet]]);
+            console.log('Success converting ' + fileName + ' to csv');
+            
+            onUploadSuccess(fileName, csvData);
         }
     }
     else {
         $('#table-header').html('Unexpected file type ' + extension);
     }
-    
-    var tableArray = csvToArray(csvData);
-    onUploadSuccess(fileName, tableArray);
-    
 }
 
-function onUploadSuccess(fileName, tableArray) {
-    $("#table-header").html(fileName).show();
-    $("#score-display").empty();
+function onUploadSuccess(fileName, csvData) {
+    csvData = csvData.trim().replace(/\s\s+/g, ' ');
+    var tableArray = csvToArray(csvData);
+    
+    console.log(fileName);
+    console.log(tableArray);
+    $('#table-header').html(fileName).show();
+    $('#score-display').empty();
     var tableHtml = buildTable(tableArray);
-    $("#table-div").html(tableHtml).show();
+    $('#table-div').html(tableHtml).show();
 }
 
 function csvToArray(csvText) {
@@ -106,32 +107,6 @@ function csvToArray(csvText) {
     }
     
     return arr;
-}
-
-function xlsToArray(xlsContents) {
-    var toPost = {
-        contents : xlsContents
-    }; 
-    
-    $.ajax({
-        type : 'POST',
-        url : '/xlsToArray',
-        data : toPost,
-        dataType : 'json',
-        timeout : 5000,
-        success : function(data) {
-            // Response is an array containing the spreadsheet's rows.
-            // Convert to a 2d array by splitting over commas
-            
-        },
-        error: function(request, status, err) {
-            console.log('Error uploading xls. status=' + status + ' err=' + err);
-            if(status == "error") {
-                status = err;
-            }
-            //$('#table-header').html('Error uploading Excel file: );
-        }
-    });
 }
 
 function buildTable(tableArray) {    
