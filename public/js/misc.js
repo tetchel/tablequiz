@@ -2,32 +2,6 @@
 
 ///// Depends on nothing /////
 
-///// Settings /////
-
-function settingsListener(element) {
-    element = $(element);
-    
-    var settingName = element.parent().attr('id');
-    // assume only one sibling
-    var sibling = $(element.siblings()[0]);
-    
-    var setting;
-    var color;
-    if(element.hasClass('btn-on')) {
-        setting = true;
-        color = '#00dd00';
-    }
-    else if(element.hasClass('btn-off')) {
-        setting = true;
-        color = '#dd0000';
-    }
-    
-    console.log(settingName + ' = ' + setting);
-    var oldBackground = element.css('background');
-    element.css('background', color);
-    sibling.css('background', oldBackground);
-}
-
 function copyRelPath() {
     copyToClipboard(window.location.href);
 }

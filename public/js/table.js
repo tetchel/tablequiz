@@ -43,7 +43,7 @@ function filePicked(files) {
     
     var reader = new FileReader();
     reader.onerror = function (e) {
-        $("#table-header").html('<span class=\"wrong-answer\">Error reading ' + fileName
+        $("#content-header").html('<span class=\"wrong-answer\">Error reading ' + fileName
                                     + e.target.result + '</span>').show();
     };
     
@@ -91,7 +91,7 @@ function filePicked(files) {
         }
     }
     else {
-        $('#table-header').html('Unexpected file type ' + extension);
+        $('#content-header').html('Unexpected file type ' + extension);
     }
 }
 
@@ -101,7 +101,7 @@ function onUploadSuccess(fileName, csvData) {
     
     console.log(fileName);
     console.log(tableArray);
-    $('#table-header').html(fileName).show();
+    $('#content-header').html(fileName).show();
     $('#score-display').empty();
     var tableHtml = buildTable(tableArray);
     $('#table-div').html(tableHtml).show();
@@ -193,7 +193,7 @@ function uploadQuiz() {
         return;
     }
     
-    var quizName = prompt('Please enter a name for this quiz.', $('#table-header').text());
+    var quizName = prompt('Please enter a name for this quiz.', $('#content-header').text());
     if(quizName === null) {
         // cancel was pressed
         $("body").css("cursor", "default");

@@ -10,7 +10,7 @@ body {
     height: 100%;
     width: 100%;
     font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-    background: #fafafa;
+    background: #f8f8f8;
 }
 
 #top-bar {
@@ -26,41 +26,49 @@ body {
     
     display:flex;
     flex-flow:row;
+    justify-content: space-between;
+    align-items:center;
     
     padding: 15px;
 }
 
-#top-bar * {
-    position:relative;
-    top:50%;
-    transform: translateY(-50%);
-    
-    font-weight: bold;
-}
-
-#validate-button, .first-button, .second-button {
+.first-button, .second-button, #settings-button, #validate-button {
     background-color: limegreen;
     min-width: 10%;
-    border: 2px solid #1b1b1b;    
+    border: 2px solid #1b1b1b;
+    height: 50px;
+    width: 120px;
+    
+    font-weight: bold;
+    flex-grow: 1;
 }
 
 .first-button {
     background-color: cornflowerblue;    
-    line-height: 27px;
+    line-height:32px;
 }
-
-.first-button > .glyphicon, .second-button > .glyphicon {
-    /* forgive me for this hack */
-    padding-bottom:6px;
-}
-
 .second-button {
     background-color: #cc0000;
-    margin-left: 10px;
+    margin-left:10px;
+}
+
+.spacer {
+    text-align: center;
+    width:5px;
+    flex-grow:10;
+}
+
+#settings-button {
+    background-color: yellow;
+    margin-left:auto;
+    vertical-align: middle;
+    padding-bottom:0px;
+    padding-top:12px;
 }
 
 #validate-button {
     margin-left:auto;
+    margin-right:10px;
 }
 
 input[type="file"] {

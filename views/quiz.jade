@@ -6,18 +6,22 @@ block first-button
         input#file-picker(type='file', accept='.csv, .xls, .xlsx', onchange='filePicked(this.files)')
 
 block second-button
-    button.second-button.btn.btn-default(title='Upload this quiz so that it will be saved, and can be shared' onclick='uploadQuiz()')
-        span.glyphicon.glyphicon-upload        
+    button.second-button.btn.btn-default(title='Upload this quiz so that it will be saved, and can be shared' onclick='uploadQuiz()') 
         |  Upload This Quiz
 
 block right-button
+    
     button#validate-button.btn.btn-default(title='Check your answers' onclick='validate()')
         | Validate
+    
+    a#settings-button.btn.btn-default(href="/settings")
+        | Settings
 
 append content
     #main-content
 
-        #table-header
+        #content-header
+            
 
         #score-display
         // populated by validator.js
