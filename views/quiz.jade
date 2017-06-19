@@ -1,23 +1,23 @@
 extends layout
-    
-block content
-    #top-bar
-        block contextual-buttons
-            label.first-button.btn.btn-default.btn-file(title='Upload a file to transform into a table')
-                | Select a File
-                input#file-picker(type='file', accept='.csv, .xls, .xlsx', onchange='filePicked(this.files)')
 
-            button.second-button.btn.btn-default(title='Upload this quiz so that it will be saved, and can be shared' onclick='uploadQuiz()')
-                | Upload This Quiz
+block first-button
+    label.first-button.btn.btn-default.btn-file(title='Select a file to transform into a table')
+        | Select a File
+        input#file-picker(type='file', accept='.csv, .xls, .xlsx', onchange='filePicked(this.files)')
 
-        // Every quiz page has a validate button
-        button#validate-button.btn.btn-default(title='Check your answers' onclick='validate()')
-            | Validate    
+block second-button
+    button.second-button.btn.btn-default(title='Upload this quiz so that it will be saved, and can be shared' onclick='uploadQuiz()')
+        span.glyphicon.glyphicon-upload        
+        |  Upload This Quiz
 
+block right-button
+    button#validate-button.btn.btn-default(title='Check your answers' onclick='validate()')
+        | Validate
+
+append content
     #main-content
 
         #table-header
-            p   #{tableHeader}
 
         #score-display
         // populated by validator.js

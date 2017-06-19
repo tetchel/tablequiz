@@ -13,7 +13,7 @@ var TABLE_KEY = 'table';
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('quiz', { title : "TableQuiz", tableHeader : '↖ Select a file!', tableData : '' });
+  return res.render('quiz', { title : 'TableQuiz', contentHeader : '↖ Select a file!', tableData : '' });
 });
 
 router.post(QUIZ_ROUTE, function(req, res, next) {
@@ -26,7 +26,7 @@ router.post(QUIZ_ROUTE, function(req, res, next) {
         if(err) return console.log('Error putting ' + id, err);
         
         var newUrl = QUIZ_ROUTE + '/' + id;
-        res.status(201).send({ redirect : newUrl });
+        return res.status(201).send({ redirect : newUrl });
     });
 });
 
@@ -47,8 +47,15 @@ router.get(QUIZ_ROUTE + '/:quizName', function(req, res, next) {
         
         // Render the page, replace the table with the one we've retrieved
         // and sent it to the client
-        return res.render('saved-quiz', { title : quizName, tableHeader : quizName, tableData : tableHtml });        
+        return res.render('saved-quiz', { 
+                            title : quizName + ' | TableQuiz', 
+                            contentHeader : quizName, tableData : tableHtml 
+                          });
     });
+});
+
+router.get('/settings', function(req, res, next) {
+    return res.render('settings', { title : 'Settings | TableQuiz', contentHeader : 'Settings' });
 });
 
 module.exports = router;

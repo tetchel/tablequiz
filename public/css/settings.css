@@ -1,0 +1,25 @@
+.settings-container {
+    margin:auto;
+    width:80%;
+    margin-top:20px;
+}
+
+.setting {
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    
+    padding:10px;
+}
+
+.glyphicon-question-sign {
+    padding-right: 15px;
+}
+
+.setting-toggle {
+    margin-left:auto;
+}
+
+.setting-toggle > button {
+    min-width:100px;
+}

@@ -1,39 +1,51 @@
 doctype html
 html(lang='en')
 
-    head
-        meta(charset='utf-8')
-        meta(http-equiv='X-UA-Compatible', content='IE=edge')
-        meta(name='viewport', content='width=device-width, initial-scale=1')
-        title
-            | #{title}
+head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    title
+        | #{title}
 
-        link(rel='shortcut icon', type='image/x-icon', href='/favicon.ico')
-        // RESET
-        link(rel='stylesheet', href='/stylesheets/reset.css')
-        link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', 
-                integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', 
+    link(rel='shortcut icon', type='image/x-icon', href='/favicon.ico')
+    
+    link(rel='stylesheet', href='/css/reset.css')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css', 
+            integrity='sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u', 
+            crossorigin='anonymous')
+
+    link(rel='stylesheet', href='/css/main.css')
+    
+    block headAppend
+
+body
+    #top-bar
+        block first-button
+        
+        block second-button
+        
+        block right-button
+
+    #main-content
+        block content
+            #content-header
+                | #{contentHeader}
+
+    block foot
+        footer
+            | <b>Submit Feedback</b> - 
+            a(target='_blank', href='https://github.com/tetchel/tablequiz/issues') On GitHub
+            |  |      
+            a(target='_blank', href='mailto:tetchel@gmail.com') Email Me
+
+    block scripts
+        script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
+        script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', 
+                integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', 
                 crossorigin='anonymous')
 
-        link(rel='stylesheet', href='/stylesheets/main.css')
-
-    body
-        block content 
-
-        block foot
-            footer
-                | <b>Submit Feedback</b> - 
-                a(target='_blank', href='https://github.com/tetchel/tablequiz/issues') On GitHub
-                |  |      
-                a(target='_blank', href='mailto:tetchel@gmail.com') Email Me
-
-        block scripts
-            script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
-            script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', 
-                    integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', 
-                    crossorigin='anonymous')
-
-            script(src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.10.5/xlsx.core.min.js")
-            script(src='/javascripts/validator.js')
-            script(src='/javascripts/tablegen.js')
-            script(src='/javascripts/misc.js')
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.10.5/xlsx.core.min.js")
+        script(src='/js/misc.js')
+        script(src='/js/validator.js')
+        script(src='/js/table.js')       

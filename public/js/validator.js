@@ -1,5 +1,7 @@
 "use strict";
 
+///// Depends on nothing /////
+
 var CLASS_CORRECT = "correct-answer";
 var CLASS_WRONG = "wrong-answer";
 var CORRECT = "&#10004; Correct";

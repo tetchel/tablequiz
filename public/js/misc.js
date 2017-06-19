@@ -1,11 +1,31 @@
 "use strict";
 
-window.onbeforeunload = function() {
-    console.log('thing');
-    console.log(window.location.pathname);
-    if(shouldConfirmExit()) {
-        return 'Your generated quiz will be lost. Are you sure you want to exit?';
+///// Depends on nothing /////
+
+///// Settings /////
+
+function settingsListener(element) {
+    element = $(element);
+    
+    var settingName = element.parent().attr('id');
+    // assume only one sibling
+    var sibling = $(element.siblings()[0]);
+    
+    var setting;
+    var color;
+    if(element.hasClass('btn-on')) {
+        setting = true;
+        color = '#00dd00';
     }
+    else if(element.hasClass('btn-off')) {
+        setting = true;
+        color = '#dd0000';
+    }
+    
+    console.log(settingName + ' = ' + setting);
+    var oldBackground = element.css('background');
+    element.css('background', color);
+    sibling.css('background', oldBackground);
 }
 
 function copyRelPath() {
@@ -27,8 +47,6 @@ function copyToClipboard(text) {
         try {
             return document.execCommand("copy");  // Security exception may be thrown by some browsers.
         } catch (ex) {
-            console.log('Couldn\'t copy to clipboard ; user must do it manually');
-            console.log(ex);
             prompt('Copy the link below:', text);         
         } finally {
             document.body.removeChild(textarea);

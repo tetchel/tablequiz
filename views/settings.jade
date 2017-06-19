@@ -1,0 +1,28 @@
+extends layout
+
+append headAppend
+    link(rel='stylesheet', href='/css/settings.css')
+
+block first-button
+    a.first-button.btn.btn-default(href='/')
+        span.glyphicon.glyphicon-home
+        
+append content
+    div.settings-container
+        div.setting.panel.panel-primary
+            span.glyphicon.glyphicon-question-sign(title="The original order of the rows is maintained when uploading a quiz.")
+            | Randomize row order
+            div#randomize-rows.setting-toggle.btn-group
+                button.btn.btn-default.btn-on(onclick="settingsListener(this, true)")
+                    | On
+                button.btn.btn-default.btn-off(onclick="settingsListener(this, false)")
+                    | Off
+                    
+        div.setting.panel.panel-primary
+            span.glyphicon.glyphicon-question-sign(title="Each row will have its answers checked after you have filled in all its fields. You can still Validate the whole quiz at once.")
+            | Validate after completing each row
+            div#validate-after-row.setting-toggle.btn-group
+                button.btn.btn-default.btn-on(onclick="settingsListener(this, true)")
+                    | On
+                button.btn.btn-default.btn-off(onclick="settingsListener(this, false)")
+                    | Off

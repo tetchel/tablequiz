@@ -1,5 +1,7 @@
 "use strict";
 
+///// Depends on misc.js /////
+
 function isTablePopulated() {
     return $('#table-div').text().length > 0;
 }
@@ -7,6 +9,12 @@ function isTablePopulated() {
 // Return true if user is on the root page and has uploaded a table.
 function shouldConfirmExit() {
     return isTablePopulated() && window.location.pathname == '/';
+}
+
+window.onbeforeunload = function() {
+    if(shouldConfirmExit()) {
+        return 'Your generated quiz will be lost. Are you sure you want to exit?';
+    }
 }
 
 function filePicked(files) {    
