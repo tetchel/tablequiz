@@ -1,39 +1,63 @@
 $(document).ready(function() {
+    setButtonValues();
     updateUploads();
 });
+
+var BUTTON_ON = '#00dd00';
+var BUTTON_OFF = '#dd0000';
+
+function setButtonValues() {
+    $('.setting-toggle').each(function(index, item) {
+        var settingName = $(item).attr('id');
+        var toggled = localStorage.getItem(settingName);
+        if(toggled === "true") {
+            setBtnGroupBackground($(item).find('.btn-on'), BUTTON_ON);
+        }
+        else {
+            setBtnGroupBackground($(item).find('.btn-off'), BUTTON_OFF);
+        }
+    });
+}
 
 function settingsListener(element) {
     element = $(element);
     
     var settingName = element.parent().attr('id');
-    // assume only one sibling
-    var sibling = $(element.siblings()[0]);
     
     var setting;
     var color;
     if(element.hasClass('btn-on')) {
         setting = true;
-        color = '#00dd00';
+        color = BUTTON_ON;
     }
     else if(element.hasClass('btn-off')) {
-        setting = true;
-        color = '#dd0000';
+        setting = false;
+        color = BUTTON_OFF;
     }
     
-    console.log(settingName + ' = ' + setting);
+    setBtnGroupBackground(element, color);
+    localStorage.setItem(settingName, setting);
+}
+
+function setBtnGroupBackground(element, color) {
+    // assume only one sibling
+    var sibling = $(element.siblings()[0]);
+    
     var oldBackground = element.css('background');
     element.css('background', color);
     sibling.css('background', oldBackground);
 }
 
 function updateUploads() {
-    var uploads = ['HandQuiz', 'BrachialPlexusAxillaQuiz'];
+    var uploads = localStorage.getItem('uploads');
+    uploads = JSON.parse(uploads);
+    console.log(uploads[0]);
     
     $.each(uploads, function(index, item) {
-        var linkToItem = 'http://' + location.host + '/quizzes/' + item;
+        //var linkToItem = 'http://' + location.host + '/quizzes/' + item;
         
         $('#uploads-list').append('<li class="list-group-item"><a target="_blank" href="' + 
-                                  linkToItem + '">' + item + '</li>');
+                                  item.url + '">' + item.quizName + '</li>');
     });
 }
 

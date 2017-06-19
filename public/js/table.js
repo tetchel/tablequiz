@@ -99,8 +99,6 @@ function onUploadSuccess(fileName, csvData) {
     csvData = csvData.trim().replace(/\s\s+/g, ' ');
     var tableArray = csvToArray(csvData);
     
-    console.log(fileName);
-    console.log(tableArray);
     $('#content-header').html(fileName).show();
     $('#score-display').empty();
     var tableHtml = buildTable(tableArray);
@@ -217,7 +215,26 @@ function uploadQuiz() {
             // clear the old table
             $('#table-div').empty();
             clearValidation();
-            // Response is a JSO with the URL of the newly created table.
+            
+            // Save this as 'your' quiz in the localstorage
+            var currentUploads = localStorage.getItem('uploads');
+            if(!currentUploads) {
+                currentUploads = '';
+            }
+            else {
+                currentUploads = JSON.parse(currentUploads);
+            }
+            
+            var uploads = [];
+            for(var x in currentUploads) {
+                uploads.push(currentUploads[x]);
+            }
+            console.log(uploads);
+            
+            uploads.push({ quizName: quizName, url: data.redirect });
+            localStorage.setItem('uploads', JSON.stringify(uploads));
+            
+            // The server gave us the URL of the newly created table.
             window.location.href = data.redirect;
         },
         error: function(request, status, err) {
