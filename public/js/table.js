@@ -17,6 +17,8 @@ window.onbeforeunload = function() {
     }
 }
 
+var glob_table = [];
+
 function filePicked(files) {    
     var file = files[0];
     
@@ -57,11 +59,12 @@ function filePicked(files) {
     }
     else if(extension == '.xls' || extension == '.xlsx') {
         reader.readAsBinaryString(file);        
-        reader.onload = function (e) {            
+        reader.onload = function(e) {            
             var workbook = XLSX.read(e.target.result, {type: 'binary'});
+            
+            // Test for and handle multiple-sheet workbooks
             var numSheets = workbook.SheetNames.length;
             console.log(numSheets + ' sheets');
-            // TODO test multisheets
             var sheet = 0;
             if(numSheets > 1) {
                 var validSheet = false;
@@ -84,6 +87,7 @@ function filePicked(files) {
                     }
                 }
             }
+            // Convert to csv; we already know what to do from there
             var csvData = XLSX.utils.sheet_to_csv(workbook.Sheets[workbook.SheetNames[sheet]]);
             console.log('Success converting ' + fileName + ' to csv');
             
@@ -98,6 +102,8 @@ function filePicked(files) {
 function onUploadSuccess(fileName, csvData) {
     csvData = csvData.trim().replace(/\s\s+/g, ' ');
     var tableArray = csvToArray(csvData);
+    // Glob_table must not be modified. Deep copy tableArray
+    glob_table = JSON.parse(JSON.stringify(tableArray));
     
     $('#content-header').html(fileName).show();
     $('#score-display').empty();
@@ -123,9 +129,17 @@ function csvToArray(csvText) {
 
 function buildTable(tableArray) {    
     // Separate header since we don't want to randomize its position
-    var header = tableArray[0];    
-    
-    //tableArray = shuffleArray(tableArray);
+    var header = tableArray[0];
+    tableArray = tableArray.slice(1, tableArray.length);
+
+    if(localStorage.getItem('randomize-rows') == "true") {
+        console.log('local storage says to rdmize')
+        console.log(tableArray);
+        tableArray = shuffleArray(tableArray);
+        console.log('shuffled:');
+        console.log(tableArray);
+        console.log('GLOBAL: '+ glob_table);        
+    }
     
     var tableHeaderHtml = "<tr>";
     var i;
@@ -145,8 +159,7 @@ function buildTable(tableArray) {
     output.push(tableHeaderHtml);
     // Output now consists of just the table header
     
-    // Start at 1 to skip over the header
-    for (i = 1; i < tableArray.length; i++) {        
+    for (i = 0; i < tableArray.length; i++) {
         var line = tableArray[i];
         
         // The row starts off with the question
@@ -199,7 +212,9 @@ function uploadQuiz() {
     }
     
     clearValidation();
-    var tableHtml = $('#table-div').html();
+    
+    // Since the displayed table might be different, we must re-build the html
+    var tableHtml = buildTable(glob_table);
     var toPost = {
         quizName : quizName,
         table : tableHtml
@@ -240,7 +255,7 @@ function uploadQuiz() {
         error: function(request, status, err) {
             console.log('Quiz upload failed. Status: ' + status + ' err: ' + err);
             if(status == "error") {
-                alert('Upload failed. This means the server is currently down. Please try again later.');
+                alert('Upload failed: ' + err + ' - Please try again later.');
             }
             else if(status == "timeout") {
                 alert('Upload timed out. This means the server is currently down. Please try again later.');

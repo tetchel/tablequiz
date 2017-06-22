@@ -51,7 +51,6 @@ function setBtnGroupBackground(element, color) {
 function updateUploads() {
     var uploads = localStorage.getItem('uploads');
     uploads = JSON.parse(uploads);
-    console.log(uploads[0]);
     
     $.each(uploads, function(index, item) {
         //var linkToItem = 'http://' + location.host + '/quizzes/' + item;
