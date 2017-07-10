@@ -81,6 +81,10 @@ button:focus {
 
 #main-content {
     margin: 10px;
+}
+
+#content-header {
+    /* Must be under the top bar */
     margin-top: 100px;
 }
 

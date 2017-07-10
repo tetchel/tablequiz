@@ -19,7 +19,7 @@ window.onbeforeunload = function() {
 
 var glob_table = [];
 
-function filePicked(files) {    
+function filePicked(files) {
     var file = files[0];
     
     if(files.length > 1) {
@@ -107,7 +107,7 @@ function onUploadSuccess(fileName, csvData) {
     
     $('#content-header').html(fileName).show();
     $('#score-display').empty();
-    var tableHtml = buildTable(tableArray);
+    var tableHtml = buildTable(tableArray, true);
     $('#table-div').html(tableHtml).show();
 }
 
@@ -127,18 +127,16 @@ function csvToArray(csvText) {
     return arr;
 }
 
-function buildTable(tableArray) {    
+function buildTable(tableArray, allowRandomize) {
     // Separate header since we don't want to randomize its position
     var header = tableArray[0];
     tableArray = tableArray.slice(1, tableArray.length);
 
-    if(localStorage.getItem('randomize-rows') == "true") {
-        console.log('local storage says to rdmize')
-        console.log(tableArray);
+    if(allowRandomize && localStorage.getItem('randomize-rows') == "true") {
         tableArray = shuffleArray(tableArray);
-        console.log('shuffled:');
-        console.log(tableArray);
-        console.log('GLOBAL: '+ glob_table);        
+    }
+    else {
+        console.log('not randomizing');
     }
     
     var tableHeaderHtml = "<tr>";
@@ -214,7 +212,7 @@ function uploadQuiz() {
     clearValidation();
     
     // Since the displayed table might be different, we must re-build the html
-    var tableHtml = buildTable(glob_table);
+    var tableHtml = buildTable(glob_table, false);
     var toPost = {
         quizName : quizName,
         table : tableHtml
@@ -269,4 +267,4 @@ function uploadQuiz() {
     $("body").css("cursor", "default");
 }
 
-exports.buildTable = buildTable;
+//exports.buildTable = buildTable;
