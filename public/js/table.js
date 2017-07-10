@@ -2,6 +2,26 @@
 
 ///// Depends on misc.js /////
 
+$(document).ready(function() {
+    // This bit only runs if it's a saved quiz
+    var tableData = $('#table-div').data('table');
+    
+    if(tableData) {
+        var tableArray = [];
+        for(var item in tableData) {
+            tableArray.push(tableData[item]);
+        }
+
+        showTable(tableArray);
+    }
+});
+
+window.onbeforeunload = function() {
+    if(shouldConfirmExit()) {
+        return 'Your generated quiz will be lost. Are you sure you want to exit?';
+    }
+}
+
 function isTablePopulated() {
     return $('#table-div').text().length > 0;
 }
@@ -9,12 +29,6 @@ function isTablePopulated() {
 // Return true if user is on the root page and has uploaded a table.
 function shouldConfirmExit() {
     return isTablePopulated() && window.location.pathname == '/';
-}
-
-window.onbeforeunload = function() {
-    if(shouldConfirmExit()) {
-        return 'Your generated quiz will be lost. Are you sure you want to exit?';
-    }
 }
 
 var glob_table = [];
@@ -99,6 +113,12 @@ function filePicked(files) {
     }
 }
 
+function showTable(tableArray) {
+    console.log(tableArray);
+    var tableHtml = buildTable(tableArray);
+    $('#table-div').html(tableHtml).show();
+}
+
 function onUploadSuccess(fileName, csvData) {
     csvData = csvData.trim().replace(/\s\s+/g, ' ');
     var tableArray = csvToArray(csvData);
@@ -107,8 +127,8 @@ function onUploadSuccess(fileName, csvData) {
     
     $('#content-header').html(fileName).show();
     $('#score-display').empty();
-    var tableHtml = buildTable(tableArray, true);
-    $('#table-div').html(tableHtml).show();
+    
+    showTable(tableArray);
 }
 
 function csvToArray(csvText) {
@@ -127,16 +147,14 @@ function csvToArray(csvText) {
     return arr;
 }
 
-function buildTable(tableArray, allowRandomize) {
+function buildTable(tableArray) {
     // Separate header since we don't want to randomize its position
     var header = tableArray[0];
     tableArray = tableArray.slice(1, tableArray.length);
-
-    if(allowRandomize && localStorage.getItem('randomize-rows') == "true") {
+    
+    // Randomize table rows if specified
+    if(localStorage.getItem('randomize-rows') == "true") {
         tableArray = shuffleArray(tableArray);
-    }
-    else {
-        console.log('not randomizing');
     }
     
     var tableHeaderHtml = "<tr>";
@@ -212,10 +230,10 @@ function uploadQuiz() {
     clearValidation();
     
     // Since the displayed table might be different, we must re-build the html
-    var tableHtml = buildTable(glob_table, false);
+//    var tableHtml = buildTable(glob_table);
     var toPost = {
         quizName : quizName,
-        table : tableHtml
+        table : glob_table
     };
     
     $.ajax({

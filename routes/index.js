@@ -24,6 +24,7 @@ router.post(QUIZ_ROUTE, function(req, res, next) {
     var toStore = JSON.stringify(req.body);
     db.put(id, toStore, function(err) {
         if(err) return console.log('Error putting ' + id, err);
+//        console.log('stored ' + toStore);
         
         var newUrl = QUIZ_ROUTE + '/' + id;
         return res.status(201).send({ redirect : newUrl });
@@ -43,13 +44,15 @@ router.get(QUIZ_ROUTE + '/:quizName', function(req, res, next) {
         // Turn the stored string back into json, and get the data from it
         var quizJson = JSON.parse(value);
         var quizName = quizJson[QUIZ_NAME_KEY];
-        var tableHtml = quizJson[TABLE_KEY];
+        // Remove the quiz name, we don't have to save it as part of the tableData
+        delete quizJson[QUIZ_NAME_KEY];
+        var tableData = JSON.stringify(quizJson);
         
         // Render the page, replace the table with the one we've retrieved
         // and sent it to the client
         return res.render('saved-quiz', { 
                             title : quizName + ' | TableQuiz', 
-                            barTitle : quizName, tableData : tableHtml 
+                            barTitle : quizName, tableData : tableData
                           });
     });
 });
