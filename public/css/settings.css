@@ -72,3 +72,17 @@
     font-size : 16px;
     font-weight: bold;
 }
+
+footer {
+    width:100%;
+    bottom:0;
+    position: fixed;
+    text-align: center;
+        
+    overflow:hidden;
+    
+    padding-top: 10px;
+    padding-bottom: 20px;
+    
+    font-size: 1.25em;
+}

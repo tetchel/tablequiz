@@ -1,6 +1,8 @@
 $(document).ready(function() {
     setButtonValues();
     updateUploads();
+    
+    onReady();
 });
 
 var BUTTON_ON = '#00dd00';
@@ -55,7 +57,7 @@ function updateUploads() {
     $.each(uploads, function(index, item) {
         //var linkToItem = 'http://' + location.host + '/quizzes/' + item;
         
-        $('#uploads-list').append('<li class="list-group-item"><a target="_blank" href="' + 
+        $('#uploads-list').append('<li class="list-group-item"><a href="' + 
                                   item.url + '">' + item.quizName + '</li>');
     });
 }

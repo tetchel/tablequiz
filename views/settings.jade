@@ -32,6 +32,13 @@ append content
                 | My Uploads
             div.panel-body
                 ul#uploads-list.list-group
-                    
+    
+    block foot
+        footer
+            | <b>Submit Feedback</b> - 
+            a(target='_blank', href='https://github.com/tetchel/tablequiz/issues') On GitHub
+            |  | 
+            a(target='_blank', href='mailto:tetchel@gmail.com') Email Me
+
 append scriptsAppend
     script(src='/js/settings.js')

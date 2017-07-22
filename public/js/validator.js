@@ -12,8 +12,6 @@ function clearValidation() {
 }
 
 function validate() {
-    $("body").css("cursor", "progress");    
-    
     clearValidation();
     
     var answerTextBoxes = $(".answer-textarea");
@@ -25,22 +23,23 @@ function validate() {
         var text = $(this).val();
         
         // Write either Correct or Wrong under each answer box
-        var toAppend = "";
+        var answerDisplayHtml = "";
         if(isCorrectAnswer(text, answer)) {
-            toAppend = "<span class=\"" + CLASS_CORRECT + "\">" + CORRECT + "</span>";
+            answerDisplayHtml = "<span class=\"" + CLASS_CORRECT + "\">" + CORRECT + "</span>";
             numCorrect++;
         }
         else {
             // Wrong answers can also be doubleclicked to change to right answers
-            toAppend = "<span class=\"" + CLASS_WRONG + "\"" +
+            answerDisplayHtml = "<span class=\"" + CLASS_WRONG + "\"" +
                     "ondblclick=\"overrideValidation(event)\"" +
                     "title=\"Double-click if you insist this is correct!\">" +
                     "&#10006; Expected: " + answer + "</span>";
         }
         
         total++;
-        var parent = $(this).parent();
-        parent.append(toAppend);
+
+        var parentCell = $(this).parent();
+        parentCell.append(answerDisplayHtml);
     });
     
     if(answerTextBoxes.length == 0) {
@@ -49,8 +48,6 @@ function validate() {
     else {
         setScore(numCorrect, total);
     }
-        
-    $("body").css("cursor", "default");
 }
 
 var scoreCorrect = 0;

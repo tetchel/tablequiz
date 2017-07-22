@@ -2,6 +2,16 @@
 
 ///// Depends on nothing /////
 
+function onReady() {
+    enableDragNDrop('top-bar');
+    
+    $('body').css('display', 'block');
+    console.log($('body').css('display'));
+    $('body').css('cursor', 'default');
+}
+
+$(document).ready = onReady;
+
 function copyRelPath() {
     copyToClipboard(window.location.href);
 }
@@ -29,10 +39,6 @@ function copyToClipboard(text) {
 }
 
 ///// Enable drag & dropping files onto the top bar /////
-
-$(document).ready(function() {
-    enableDragNDrop('top-bar');
-})
 
 function dragenter(e) {
     e.stopPropagation();

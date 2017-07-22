@@ -14,6 +14,8 @@ $(document).ready(function() {
 
         showTable(tableArray);
     }
+    
+    onReady();
 });
 
 window.onbeforeunload = function() {
@@ -114,9 +116,8 @@ function filePicked(files) {
 }
 
 function showTable(tableArray) {
-    console.log(tableArray);
     var tableHtml = buildTable(tableArray);
-    $('#table-div').html(tableHtml).show();
+    $('#table-div').html(tableHtml);//.show();
 }
 
 function onUploadSuccess(fileName, csvData) {
@@ -160,13 +161,7 @@ function buildTable(tableArray) {
     var tableHeaderHtml = "<tr>";
     var i;
     for(i = 0; i < header.length; i++) {
-        if(i == 0) {
-            tableHeaderHtml += "<th class=\"question-column\">";
-        }
-        else {
-            tableHeaderHtml += "<th>";
-        }
-        tableHeaderHtml += header[i] + "</th>";
+        tableHeaderHtml += "<th>" + header[i] + "</th>";
     }
     tableHeaderHtml += "</tr>"
     
@@ -211,19 +206,15 @@ function shuffleArray(array) {
     return array;
 }
 
-function uploadQuiz() {
-    $("body").css("cursor", "progress");
-    
+function uploadQuiz() {    
     if(!isTablePopulated()) {
         alert("There's nothing to upload! Select a file first.");
-        $("body").css("cursor", "default");
         return;
     }
     
     var quizName = prompt('Please enter a name for this quiz.', $('#content-header').text());
     if(quizName === null) {
         // cancel was pressed
-        $("body").css("cursor", "default");
         return;
     }
     
@@ -243,6 +234,8 @@ function uploadQuiz() {
         dataType : 'json',
         timeout : 5000,
         success : function(data) {
+            // data.redirect contains the location of the newly created quiz
+            
             // clear the old table
             $('#table-div').empty();
             clearValidation();
@@ -258,7 +251,10 @@ function uploadQuiz() {
             
             var uploads = [];
             for(var x in currentUploads) {
-                uploads.push(currentUploads[x]);
+                // If a saved quiz already points to the same url, remove the dupe
+                if(currentUploads[x].url != data.redirect) {
+                    uploads.push(currentUploads[x]);    
+                }
             }
             console.log(uploads);
             
@@ -281,8 +277,6 @@ function uploadQuiz() {
             }            
         }
     });
-    
-    $("body").css("cursor", "default");
 }
 
 //exports.buildTable = buildTable;
