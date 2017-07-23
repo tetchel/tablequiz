@@ -2,19 +2,40 @@
 
 ///// Depends on nothing /////
 
-var CLASS_CORRECT = "correct-answer";
-var CLASS_WRONG = "wrong-answer";
+var CLASS_CORRECT = 'correct-answer';
+var CLASS_WRONG = 'wrong-answer';
+var CLASS_ANSWER_SPOT = 'answer-spot';
 var CORRECT = "&#10004; Correct";
 
-function clearValidation() {
+var VALID_BTN_TEXT = 'Check Answers';
+
+function clearValidation(validBtn) {
     $('.' + CLASS_CORRECT).remove();
     $('.' + CLASS_WRONG).remove();
+    $('.' + CLASS_ANSWER_SPOT).html('&nbsp;');
+    $('#score-display').html('&nbsp;');
+    toggleValidateButton(validBtn);
 }
 
-function validate() {
-    clearValidation();
+// Set the Validate button to either Check Answers or Clear Answers
+function toggleValidateButton(validBtn) {
+    var text = $(validBtn).text();
     
-    var answerTextBoxes = $(".answer-textarea");
+    if(text == VALID_BTN_TEXT) {
+        // Validate button now clears validation
+        $(validBtn).text('Clear Answers');
+        $(validBtn).attr('onclick', 'clearValidation(this)');
+    }
+    else { 
+        $(validBtn).text(VALID_BTN_TEXT);
+        $(validBtn).attr('onclick', 'validate(this)');
+    }
+}
+
+function validate(validBtn) {
+    clearValidation(validBtn);
+    
+    var answerTextBoxes = $('.answer-textarea');
     // track # of questions right/wrong
     var numCorrect = 0, total = 0;
         
@@ -38,8 +59,7 @@ function validate() {
         
         total++;
 
-        var parentCell = $(this).parent();
-        parentCell.append(answerDisplayHtml);
+        $(this).parent().find('.' + CLASS_ANSWER_SPOT).html(answerDisplayHtml);
     });
     
     if(answerTextBoxes.length == 0) {

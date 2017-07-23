@@ -11,8 +11,8 @@ block second-button
 
 block right-button
     
-    button#validate-button.btn.btn-default(title='Check your answers' onclick='validate()')
-        | Validate
+    button#validate-button.btn.btn-default(title='Check your answers' onclick='validate(this)')
+        | Check Answers
     
     a#settings-button.btn.btn-default(href="/settings")
         | Settings

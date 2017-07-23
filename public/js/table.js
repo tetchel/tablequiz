@@ -127,7 +127,7 @@ function onUploadSuccess(fileName, csvData) {
     glob_table = JSON.parse(JSON.stringify(tableArray));
     
     $('#content-header').html(fileName).show();
-    $('#score-display').empty();
+    $('#score-display').html('&nbsp;');
     
     showTable(tableArray);
 }
@@ -182,7 +182,7 @@ function buildTable(tableArray) {
                 // The data-answer attribute contains the answer for this textarea.
                 row += '<td><textarea class=\"answer-textarea\"' +
                     'data-answer=\"' + tableArray[i][j] + '\">' +
-                    '</textarea>&nbsp;</td>';
+                    '</textarea><p class="answer-spot">&nbsp;</p></td>';
             }
         }
         row += "</tr>";

@@ -132,7 +132,7 @@ tr td:first-child, tr th:first-child {
 tr td:first-child {
     border: 2px solid black;
     padding-left: 1em;
-    padding-right: 5em;
+    padding-right: 3em;
 }
 
 .answer-textarea {
@@ -143,8 +143,10 @@ tr td:first-child {
     height:3em;
 }
 
-.hidden-answer {
-    color:transparent;
+.answer-spot {
+    padding-top: .2em;
+    padding-bottom: .2em;
+    margin:0;
 }
 
 .correct-answer {

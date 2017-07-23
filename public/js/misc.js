@@ -6,11 +6,20 @@ function onReady() {
     enableDragNDrop('top-bar');
     
     $('body').css('display', 'block');
-    console.log($('body').css('display'));
     $('body').css('cursor', 'default');
 }
 
 $(document).ready = onReady;
+
+function onCopyLinkClicked(element) {
+    copyRelPath();
+    var el = $(element);
+    var oldText = el.text();
+    el.text('Copied!');
+    setTimeout(function() {
+        el.text(oldText);
+    }, 1000);
+}
 
 function copyRelPath() {
     copyToClipboard(window.location.href);
