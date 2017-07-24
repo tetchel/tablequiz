@@ -33,6 +33,13 @@ body(style="display:none;cursor:progress")
         block content
             #content-header
                 | #{barTitle}
+                
+    block foot
+        footer
+            | <b>Submit Feedback</b> - 
+            a(target='_blank', href='https://github.com/tetchel/tablequiz/issues') On GitHub
+            |  | 
+            a(target='_blank', href='mailto:tetchel@gmail.com') Email Me
 
     block scripts
         script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js')
@@ -42,5 +49,4 @@ body(style="display:none;cursor:progress")
 
         script(src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.10.5/xlsx.core.min.js")
         script(src='/js/misc.js')
-        script(src='/js/validator.js')
         block scriptsAppend

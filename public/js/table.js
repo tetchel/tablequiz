@@ -118,6 +118,8 @@ function filePicked(files) {
 function showTable(tableArray) {
     var tableHtml = buildTable(tableArray);
     $('#table-div').html(tableHtml);//.show();
+    $('#second-button').css('display', 'inline');
+    $('#validate-button').css('display', 'inline');
 }
 
 function onUploadSuccess(fileName, csvData) {

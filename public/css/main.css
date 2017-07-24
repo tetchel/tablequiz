@@ -32,7 +32,7 @@ body {
     padding: 15px;
 }
 
-.first-button, .second-button, #settings-button, #validate-button {
+#first-button, #second-button, #settings-button, #validate-button {
     background-color: limegreen;
     min-width: 10%;
     border: 2px solid #1b1b1b;
@@ -43,14 +43,15 @@ body {
     flex-grow: 1;
 }
 
-.first-button {
+#first-button {
     background-color: cornflowerblue;    
     line-height:32px;
 }
 
-.second-button {
+#second-button {
     background-color: #cc0000;
     margin-left:10px;
+    display:none;
 }
 
 .spacer {
@@ -59,17 +60,18 @@ body {
     flex-grow:10;
 }
 
+#validate-button {
+    margin-left:auto;
+    margin-right:10px;
+    display:none;
+}
+
 #settings-button {
     background-color: yellow;
     margin-left:auto;
     vertical-align: middle;
     padding-bottom:0px;
     padding-top:12px;
-}
-
-#validate-button {
-    margin-left:auto;
-    margin-right:10px;
 }
 
 input[type="file"] {

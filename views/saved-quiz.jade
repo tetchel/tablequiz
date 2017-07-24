@@ -1,8 +1,8 @@
 extends quiz
 
 block first-button
-    a.first-button.btn.btn-default(href='/' title='This quiz will still be here if you come back.')
+    a#first-button.btn.btn-default(href='/' title='This quiz will still be here if you come back.')
         span.glyphicon.glyphicon-home
 block second-button
-    button.second-button.btn.btn-default(onclick='onCopyLinkClicked(this)')
+    button#second-button.btn.btn-default(onclick='onCopyLinkClicked(this)')
         | Copy A Link

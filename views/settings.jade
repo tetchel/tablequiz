@@ -4,7 +4,7 @@ append headAppend
     link(rel='stylesheet', href='/css/settings.css')
 
 block first-button
-    a.first-button.btn.btn-default(onclick="history.back()")
+    a#first-button.btn.btn-default(onclick="history.back()")
         span.glyphicon.glyphicon-arrow-left
         
 append content
@@ -32,13 +32,6 @@ append content
                 | My Uploads
             div.panel-body
                 ul#uploads-list.list-group
-    
-    block foot
-        footer
-            | <b>Submit Feedback</b> - 
-            a(target='_blank', href='https://github.com/tetchel/tablequiz/issues') On GitHub
-            |  | 
-            a(target='_blank', href='mailto:tetchel@gmail.com') Email Me
 
 append scriptsAppend
     script(src='/js/settings.js')

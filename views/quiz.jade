@@ -1,12 +1,12 @@
 extends layout
 
 block first-button
-    label.first-button.btn.btn-default.btn-file(title='Select a file to transform into a table')
+    label#first-button.btn.btn-default.btn-file(title='Select a file to transform into a table')
         | Select a File
         input#file-picker(type='file', accept='.csv, .xls, .xlsx', onchange='filePicked(this.files)')
 
 block second-button
-    button.second-button.btn.btn-default(title='Upload this quiz so that it will be saved, and can be shared' onclick='uploadQuiz()')
+    button#second-button.btn.btn-default(title='Upload this quiz so that it will be saved, and can be shared' onclick='uploadQuiz()')
         |  Upload This Quiz
 
 block right-button
@@ -23,6 +23,10 @@ append content
         | &nbsp;
 
     #table-div(data-table='#{tableData}')
+    
+    block foot
+    // no foot on a quiz
 
 append scriptsAppend
+    script(src='/js/validator.js')
     script(src='/js/table.js')
