@@ -4,8 +4,8 @@ append headAppend
     link(rel='stylesheet', href='/css/settings.css')
 
 block first-button
-    a.first-button.btn.btn-default(href='/')
-        span.glyphicon.glyphicon-home
+    a.first-button.btn.btn-default(onclick="history.back()")
+        span.glyphicon.glyphicon-arrow-left
         
 append content
     div.settings-container

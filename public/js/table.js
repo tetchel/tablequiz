@@ -154,7 +154,7 @@ function buildTable(tableArray) {
     tableArray = tableArray.slice(1, tableArray.length);
     
     // Randomize table rows if specified
-    if(localStorage.getItem('randomize-rows') == "true") {
+    if(localStorage.getItem('randomize-rows') == 'true') {
         tableArray = shuffleArray(tableArray);
     }
     
@@ -180,7 +180,8 @@ function buildTable(tableArray) {
         for(j = 1; j < line.length; j++) {
             if(line[j] && line[j].length !== 0) {
                 // The data-answer attribute contains the answer for this textarea.
-                row += '<td><textarea class=\"answer-textarea\"' +
+                row += '<td><textarea class=\"answer-textarea\" ' +
+                    'onblur="onTextareaBlur(this)"' +
                     'data-answer=\"' + tableArray[i][j] + '\">' +
                     '</textarea><p class="answer-spot">&nbsp;</p></td>';
             }

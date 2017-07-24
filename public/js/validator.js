@@ -5,6 +5,7 @@
 var CLASS_CORRECT = 'correct-answer';
 var CLASS_WRONG = 'wrong-answer';
 var CLASS_ANSWER_SPOT = 'answer-spot';
+var CLASS_TEXTAREA = 'answer-textarea';
 var CORRECT = "&#10004; Correct";
 
 var VALID_BTN_TEXT = 'Check Answers';
@@ -32,34 +33,43 @@ function toggleValidateButton(validBtn) {
     }
 }
 
+// validate a given textarea. parameter is a jquery object.
+// returns whether or not the validation was correct
+function validateTextarea(textarea) {
+    var answer = textarea.data('answer');
+    var text = textarea.val();
+
+    // Write either Correct or Wrong under each answer box
+    var answerDisplayHtml = '';
+    var correct = false;
+    if(isCorrectAnswer(text, answer)) {
+        answerDisplayHtml = "<span class=\"" + CLASS_CORRECT + "\">" + CORRECT + "</span>";
+        correct = true;
+    }
+    else {
+        // Wrong answers can also be doubleclicked to change to right answers
+        answerDisplayHtml = "<span class=\"" + CLASS_WRONG + "\"" +
+                "ondblclick=\"overrideValidation(event)\"" +
+                "title=\"Double-click if you insist this is correct!\">" +
+                "&#10006; Expected: " + answer + "</span>";
+    }
+
+    textarea.parent().find('.' + CLASS_ANSWER_SPOT).html(answerDisplayHtml);
+    return correct;   
+}
+
 function validate(validBtn) {
     clearValidation(validBtn);
     
-    var answerTextBoxes = $('.answer-textarea');
+    var answerTextBoxes = $('.' + CLASS_TEXTAREA);
     // track # of questions right/wrong
     var numCorrect = 0, total = 0;
         
     answerTextBoxes.each(function() {
-        var answer = $(this).data('answer');
-        var text = $(this).val();
-        
-        // Write either Correct or Wrong under each answer box
-        var answerDisplayHtml = "";
-        if(isCorrectAnswer(text, answer)) {
-            answerDisplayHtml = "<span class=\"" + CLASS_CORRECT + "\">" + CORRECT + "</span>";
+        if(validateTextarea($(this))) {
             numCorrect++;
-        }
-        else {
-            // Wrong answers can also be doubleclicked to change to right answers
-            answerDisplayHtml = "<span class=\"" + CLASS_WRONG + "\"" +
-                    "ondblclick=\"overrideValidation(event)\"" +
-                    "title=\"Double-click if you insist this is correct!\">" +
-                    "&#10006; Expected: " + answer + "</span>";
-        }
-        
+        }        
         total++;
-
-        $(this).parent().find('.' + CLASS_ANSWER_SPOT).html(answerDisplayHtml);
     });
     
     if(answerTextBoxes.length == 0) {
@@ -67,6 +77,38 @@ function validate(validBtn) {
     }
     else {
         setScore(numCorrect, total);
+    }
+}
+
+function onTextareaBlur(element) {
+    if(localStorage.getItem('validate-after-row') != 'true') {
+        return;
+    }
+    
+    var rowTextAreas = $(element).parent().parent().find('.' + CLASS_TEXTAREA);
+    
+    var allAreasAnswered = true;
+    for(var i = 0; i < rowTextAreas.length; i++) {
+        var textArea = $(rowTextAreas[i]);
+        if(textArea.val().trim().length === 0) {
+            allAreasAnswered = false;
+            break;
+        }
+    }
+    
+    if(allAreasAnswered) {
+        rowTextAreas.each(function() {
+           validateTextarea($(this)); 
+        });
+    }
+    
+    // set the score only when all rows are finished
+    var correct = $('.' + CLASS_CORRECT).length;
+    var wrong = $('.' + CLASS_WRONG).length;
+    var total = $('.' + CLASS_TEXTAREA).length;
+    
+    if(correct + wrong === total) {
+        setScore(correct, total);
     }
 }
 
