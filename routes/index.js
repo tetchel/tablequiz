@@ -20,6 +20,8 @@ router.post(QUIZ_ROUTE, function(req, res, next) {
     var id = req.body[QUIZ_NAME_KEY];
     // replace invalid url chars    
     id = id.replace(/[^a-zA-Z0-9-_]/g, '');
+
+    // should check if a quiz with this name already exists, right now it will just overwrite
     
     var toStore = JSON.stringify(req.body);
     db.put(id, toStore, function(err) {
